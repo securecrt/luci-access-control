@@ -125,17 +125,18 @@ local s_rule = mr:section(TypedSection, "rule", translate("Client Rules"))
 
 -----------------------------------------------------------        
     function validate_time(self, value, section)
-        local hh, mm
-        hh,mm = string.match (value, "^(%d?%d):(%d%d)$")
+        local hh, mm, ss
+        hh,mm,ss = string.match (value, "^(%d?%d):(%d%d):(%d%d)$")
         hh = tonumber (hh)
         mm = tonumber (mm)
-        if hh and mm and hh <= 23 and mm <= 59 then
+        ss = tonumber (ss)
+        if hh and mm and ss and hh <= 23 and mm <= 59 and ss <= 59 then
             return value
         else
-            return nil, translate("Time value must be HH:MM or empty")
+            return nil, translate("Time value must be HH:MM:SS or empty")
         end
     end
-    
+
     o = s_rule:option(Value, "start_time", translate("Start time"))
         o.rmempty = true  -- do not validae blank
         o.validate = validate_time 
