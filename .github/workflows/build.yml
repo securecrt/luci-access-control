@@ -1,0 +1,91 @@
+name: Build OpenWrt Package
+
+on:
+  push:
+    branches:
+      - master
+      - main
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - master
+      - main
+  workflow_dispatch:
+    inputs:
+      openwrt_version:
+        description: 'OpenWrt target version'
+        required: true
+        default: '25.12.4'
+        type: string
+      create_release:
+        description: 'Create a Draft Release on GitHub?'
+        required: true
+        default: 'false'
+        type: boolean
+      release_tag:
+        description: 'Release tag name (if creating release)'
+        required: false
+        default: 'v0.4.4'
+        type: string
+
+env:
+  DEFAULT_OPENWRT_VERSION: '25.12.4'
+
+jobs:
+  build:
+    name: Build for ${{ matrix.arch }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        arch:
+          - x86_64
+          - aarch64_generic
+          - mips_24kc
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Packages
+        uses: openwrt/gh-action-sdk@main
+        env:
+          ARCH: ${{ matrix.arch }}-${{ github.event.inputs.openwrt_version || env.DEFAULT_OPENWRT_VERSION }}
+          INDEX: 1
+          BUILD_LOG: 1
+
+      - name: Store package artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ipk-${{ matrix.arch }}-${{ github.event.inputs.openwrt_version || env.DEFAULT_OPENWRT_VERSION }}
+          path: bin/packages/**/*.ipk
+
+  release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    if: ${{ startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && github.event.inputs.create_release == true) }}
+    permissions:
+      contents: write
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ipks
+          pattern: ipk-*
+          merge-multiple: true
+
+      - name: List IPK files
+        run: |
+          ls -R ipks
+
+      - name: Create Release and Upload Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ipks/**/*.ipk
+          tag_name: ${{ github.ref_name || github.event.inputs.release_tag || 'latest' }}
+          draft: true
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

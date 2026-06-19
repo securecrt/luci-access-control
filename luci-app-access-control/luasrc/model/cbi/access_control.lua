@@ -36,6 +36,9 @@ else
     mr = Map(CONFIG_FILE_RULES)
 end
 
+-- Inject custom CSS/JS for responsive design and layout enhancements
+ma:section(Template, "access_control/css")
+
 function mr.on_after_commit (self)
     os.execute ("/etc/init.d/inetac restart >/dev/null 2>/dev/null")
 end
@@ -80,11 +83,9 @@ local s_rule = mr:section(TypedSection, "rule", translate("Client Rules"))
     o = s_rule:option(Flag, "ac_enabled", translate("Enabled"))
         o.default = '1'
         o.rmempty  = false
-
-        -- ammend "enabled" and "ac_suspend" optiona, and set weekdays  
+ 
+        -- amend "enabled" and "ac_suspend" options  
         function o.write(self, section, value)        
-            wd_write (self, section)
-            
             local key = o_global_enable:cbid (o_global_enable.section.section)
             --  "cbid.access_control.general.enabled"
             local enable = (o_global_enable.map:formvalue (key)=='1') and (value=='1')
@@ -98,7 +99,7 @@ local s_rule = mr:section(TypedSection, "rule", translate("Client Rules"))
                         ac_susp = nil
                     end
                 end
-                if ac_susp then  --  ticked issued => temporarily disable rule
+                if ac_susp then  --  ticket issued => temporarily disable rule
                     enable = false
                 end
             end
@@ -146,49 +147,9 @@ local s_rule = mr:section(TypedSection, "rule", translate("Client Rules"))
         o.size = 5
         
 -----------------------------------------------------------        
-    function make_day (nday)
-        local day = Days[nday]
-        local label = Days1:sub (nday,nday)
-        if nday==7 then
-            label = '<font color="red">'..label..'</font>'
-        end         
-        local o = s_rule:option(Flag, day, label)
-        o.rmempty = false  --  always call write
-        
-        -- read from weekdays actually
-        function o.cfgvalue (self, section)
-            local days = self.map:get (section, "weekdays")
-            if days==nil then
-                return '1'
-            end
-            return string.find (days, day) and '1' or '0'
-        end
-     
-        --  prevent saveing option in config file   
-        function o.write(self, section, value)
-            self.map:del (section, self.option)
-        end
-    end
-  
-    for i=1,7 do   
-        make_day (i)
-    end   
-    
-    function wd_write(self, section)
-        local value=''
-        local cnt=0
-        for _,day in ipairs (Days) do
-            local key = "cbid."..self.map.config.."."..section.."."..day
-            if mr:formvalue(key) then
-                value = value..' '..day
-                cnt = cnt+1
-            end
-        end
-        if cnt==7  then  --all days means no filtering 
-            value = ''
-        end
-        self.map:set(section, "weekdays", value)
-    end
+    o = s_rule:option(Value, "weekdays", translate("Weekdays"))
+        o.template = "access_control/weekdays"
+        o.rmempty = true
 
 -----------------------------------------------------------        
     o = s_rule:option(Button, "_ticket", translate("Ticket")) 

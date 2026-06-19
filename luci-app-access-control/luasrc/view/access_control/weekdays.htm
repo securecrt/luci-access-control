@@ -1,0 +1,41 @@
+<%+cbi/valueheader%>
+
+<%
+local days = {"mon", "tue", "wed", "thu", "fri", "sat", "sun"}
+local day_labels = {
+    translate("Mon"),
+    translate("Tue"),
+    translate("Wed"),
+    translate("Thu"),
+    translate("Fri"),
+    translate("Sat"),
+    translate("Sun")
+}
+local val = self:cfgvalue(section) or ""
+local checked = {}
+for _, d in ipairs(days) do
+    if val == "" then
+        -- Default to checked if no weekdays are explicitly set (means all days allowed)
+        checked[d] = true
+    else
+        checked[d] = string.find(val, d) and true or false
+    end
+end
+%>
+
+<input type="hidden" name="<%=cbid%>" id="<%=cbid%>" value="<%=pcdata(val)%>" />
+
+<div class="weekday-selector" id="weekday_sel_<%=cbid%>">
+  <% for i, d in ipairs(days) do %>
+    <input type="checkbox" 
+           id="<%=cbid%>_<%=d%>" 
+           value="<%=d%>" 
+           <% if checked[d] then %>checked="checked"<% end %> 
+           onchange="updateLuciWeekdays('<%=cbid%>')" />
+    <label for="<%=cbid%>_<%=d%>" class="<%=d == 'sun' and 'sunday' or (d == 'sat' and 'saturday' or '')%>">
+      <%=day_labels[i]%>
+    </label>
+  <% end %>
+</div>
+
+<%+cbi/valuefooter%>
