@@ -16,10 +16,11 @@ $Id$
 local CONFIG_FILE_RULES = "firewall"  
 local CONFIG_FILE_AC    = "access_control"
 local Days = {'mon','tue','wed','thu','fri','sat','sun'}
-local days_labels = {
-    translate('Mon'), translate('Tue'), translate('Wed'), 
-    translate('Thu'), translate('Fri'), translate('Sat'), translate('Sun')
-}
+local Days1 = translate('MTWTFSS')
+local days_labels = {}
+for c in Days1:gmatch("[%z\1-\127\194-\244][\128-\191]*") do
+    days_labels[#days_labels+1] = c
+end
 local mr, ma, o 
 
 local function time_elapsed (tend) 

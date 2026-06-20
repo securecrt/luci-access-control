@@ -52,23 +52,4 @@ msgstr "启用"
 msgid "Description"
 msgstr "备注描述"
 
-msgid "Mon"
-msgstr "一"
 
-msgid "Tue"
-msgstr "二"
-
-msgid "Wed"
-msgstr "三"
-
-msgid "Thu"
-msgstr "四"
-
-msgid "Fri"
-msgstr "五"
-
-msgid "Sat"
-msgstr "六"
-
-msgid "Sun"
-msgstr "日"
