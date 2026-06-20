@@ -60,8 +60,8 @@ jobs:
         with:
           name: packages-${{ matrix.arch }}-${{ github.event.inputs.openwrt_version || env.DEFAULT_OPENWRT_VERSION }}
           path: |
-            bin/packages/**/*.ipk
-            bin/packages/**/*.apk
+            bin/packages/**/*luci-app-access-control*.ipk
+            bin/packages/**/*luci-app-access-control*.apk
 
   release:
     name: Create GitHub Release
