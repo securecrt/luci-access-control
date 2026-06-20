@@ -10,6 +10,13 @@ var callHostHints = rpc.declare({
     expect: { '': {} }
 });
 
+var callInitAction = rpc.declare({
+    object: 'luci',
+    method: 'setInitAction',
+    params: [ 'name', 'action' ],
+    expect: { '': true }
+});
+
 return view.extend({
     load: function() {
         return Promise.all([
@@ -17,6 +24,12 @@ return view.extend({
             uci.load('firewall'),
             callHostHints()
         ]);
+    },
+
+    handleSaveApply: function(ev, mode) {
+        return this.super('handleSaveApply', [ev, mode]).then(function() {
+            return callInitAction('inetac', 'restart');
+        });
     },
 
     render: function(data) {
@@ -348,11 +361,9 @@ return view.extend({
             if (section_id) {
                 uci.set('firewall', section_id, 'ac_enabled', '1');
                 uci.set('firewall', section_id, 'enabled', '0');
-                uci.set('firewall', section_id, 'src', '*');
+                uci.set('firewall', section_id, 'src', 'lan');
                 uci.set('firewall', section_id, 'dest', 'wan');
                 uci.set('firewall', section_id, 'target', 'REJECT');
-                uci.set('firewall', section_id, 'proto', '0');
-                uci.set('firewall', section_id, 'extra', '--kerneltz');
             }
             return section_id;
         };
@@ -426,6 +437,7 @@ return view.extend({
         o = s2.option(form.Value, 'weekdays', _('Weekdays'));
         o.render = function(section_id, option_index) {
             var val = uci.get('firewall', section_id, 'weekdays') || '';
+            var val_lower = val.toLowerCase();
 
             // Grid cell rendering (read-only summary)
             if (option_index !== undefined) {
@@ -444,7 +456,7 @@ return view.extend({
                         'sun': _('ac_Sun') === 'ac_Sun' ? 'S' : _('ac_Sun')
                     };
                     var active_labels = active_days.map(function(d) {
-                        return day_labels[d] || d;
+                        return day_labels[d.toLowerCase()] || d;
                     });
                     span.textContent = active_labels.join(' ');
                 }
@@ -465,15 +477,15 @@ return view.extend({
             input.value = val;
             container.appendChild(input);
 
-            var days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+            var days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
             var day_labels = {
-                'mon': _('ac_Mon') === 'ac_Mon' ? 'M' : _('ac_Mon'),
-                'tue': _('ac_Tue') === 'ac_Tue' ? 'T' : _('ac_Tue'),
-                'wed': _('ac_Wed') === 'ac_Wed' ? 'W' : _('ac_Wed'),
-                'thu': _('ac_Thu') === 'ac_Thu' ? 'T' : _('ac_Thu'),
-                'fri': _('ac_Fri') === 'ac_Fri' ? 'F' : _('ac_Fri'),
-                'sat': _('ac_Sat') === 'ac_Sat' ? 'S' : _('ac_Sat'),
-                'sun': _('ac_Sun') === 'ac_Sun' ? 'S' : _('ac_Sun')
+                'Mon': _('ac_Mon') === 'ac_Mon' ? 'M' : _('ac_Mon'),
+                'Tue': _('ac_Tue') === 'ac_Tue' ? 'T' : _('ac_Tue'),
+                'Wed': _('ac_Wed') === 'ac_Wed' ? 'W' : _('ac_Wed'),
+                'Thu': _('ac_Thu') === 'ac_Thu' ? 'T' : _('ac_Thu'),
+                'Fri': _('ac_Fri') === 'ac_Fri' ? 'F' : _('ac_Fri'),
+                'Sat': _('ac_Sat') === 'ac_Sat' ? 'S' : _('ac_Sat'),
+                'Sun': _('ac_Sun') === 'ac_Sun' ? 'S' : _('ac_Sun')
             };
 
             var self = this;
@@ -484,15 +496,15 @@ return view.extend({
                 checkbox.value = d;
 
                 // Check default: if no weekdays specified, it means all days
-                if (val === '' || val.split(' ').indexOf(d) !== -1) {
+                if (val === '' || val_lower.split(' ').indexOf(d.toLowerCase()) !== -1) {
                     checkbox.checked = true;
                 }
 
                 var label = document.createElement('label');
                 label.setAttribute('for', checkbox.id);
                 label.textContent = day_labels[d];
-                if (d === 'sun') label.className = 'sunday';
-                if (d === 'sat') label.className = 'saturday';
+                if (d === 'Sun') label.className = 'sunday';
+                if (d === 'Sat') label.className = 'saturday';
 
                 checkbox.addEventListener('change', function() {
                     var selected = [];
@@ -580,7 +592,9 @@ return view.extend({
                 }
                 uci.save();
                 uci.commit('firewall').then(function() {
-                    location.reload();
+                    callInitAction('inetac', 'restart').then(function() {
+                        location.reload();
+                    });
                 });
             });
 
@@ -597,6 +611,15 @@ return view.extend({
             sections.forEach(function(s) {
                 var ac_enabled = uci.get('firewall', s['.name'], 'ac_enabled');
                 if (ac_enabled !== undefined && ac_enabled !== null) {
+                    if (uci.get('firewall', s['.name'], 'src') === '*') {
+                        uci.set('firewall', s['.name'], 'src', 'lan');
+                    }
+                    if (uci.get('firewall', s['.name'], 'extra') !== undefined) {
+                        uci.remove('firewall', s['.name'], 'extra');
+                    }
+                    if (uci.get('firewall', s['.name'], 'proto') !== undefined) {
+                        uci.remove('firewall', s['.name'], 'proto');
+                    }
                     var rule_enabled = ac_enabled === '1';
                     var enable = global_enabled && rule_enabled;
                     if (!enable) {
