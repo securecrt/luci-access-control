@@ -112,7 +112,8 @@ return view.extend({
         s2.sortable = true;
         
         s2.filter = function(section_id) {
-            return uci.get('firewall', section_id, 'ac_enabled') !== null;
+            var val = uci.get('firewall', section_id, 'ac_enabled');
+            return (val !== undefined && val !== null);
         };
 
         s2.add = function(name) {
@@ -343,8 +344,9 @@ return view.extend({
             var global_enabled = uci.get('access_control', 'general', 'enabled') === '1';
             var sections = uci.sections('firewall', 'rule');
             sections.forEach(function(s) {
-                if (uci.get('firewall', s['.name'], 'ac_enabled') !== null) {
-                    var rule_enabled = uci.get('firewall', s['.name'], 'ac_enabled') === '1';
+                var ac_enabled = uci.get('firewall', s['.name'], 'ac_enabled');
+                if (ac_enabled !== undefined && ac_enabled !== null) {
+                    var rule_enabled = ac_enabled === '1';
                     var enable = global_enabled && rule_enabled;
                     if (!enable) {
                         uci.remove('firewall', s['.name'], 'ac_suspend');
