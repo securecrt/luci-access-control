@@ -178,7 +178,12 @@
         display: none !important;
     }
     
-    .cbi-section-table tr.cbi-section-table-row {
+    .cbi-section-table tr.cbi-section-table-row,
+    .cbi-section-table-row,
+    .cbi-section-table .tr {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
         background: rgba(255, 255, 255, 0.03) !important;
         border: 1px solid rgba(255, 255, 255, 0.08) !important;
         border-radius: 12px !important;
@@ -186,10 +191,17 @@
         padding: 16px !important;
         box-shadow: 0 4px 6px rgba(0,0,0,0.15) !important;
         position: relative !important;
+        box-sizing: border-box !important;
     }
     
     .cbi-section-table tr.cbi-section-table-row td.cbi-value-field,
-    .cbi-section-table tr.cbi-section-table-row td.cbi-section-table-cell {
+    .cbi-section-table tr.cbi-section-table-row td.cbi-section-table-cell,
+    .cbi-section-table-row .cbi-value-field,
+    .cbi-section-table-row .cbi-section-table-cell,
+    .cbi-section-table-row .td,
+    .cbi-section-table .tr .cbi-value-field,
+    .cbi-section-table .tr .cbi-section-table-cell,
+    .cbi-section-table .tr .td {
         display: flex !important;
         align-items: center !important;
         justify-content: flex-start !important;
@@ -198,17 +210,31 @@
         border-bottom: 1px dashed rgba(255, 255, 255, 0.08) !important;
         text-align: left !important;
         flex-wrap: wrap !important;
-        min-height: 45px;
+        min-height: 45px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
     }
     
-    .cbi-section-table tr.cbi-section-table-row td:last-child {
+    .cbi-section-table tr.cbi-section-table-row td:last-child,
+    .cbi-section-table-row .cbi-value-field:last-child,
+    .cbi-section-table-row .cbi-section-table-cell:last-child,
+    .cbi-section-table-row .td:last-child,
+    .cbi-section-table .tr .cbi-value-field:last-child,
+    .cbi-section-table .tr .cbi-section-table-cell:last-child,
+    .cbi-section-table .tr .td:last-child {
         border-bottom: none !important;
         justify-content: flex-end !important;
         padding-top: 14px !important;
     }
 
-    .cbi-section-table tr.cbi-section-table-row td[data-label]::before {
-        content: attr(data-label);
+    .cbi-section-table tr.cbi-section-table-row td[data-label]::before,
+    .cbi-section-table-row .cbi-value-field[data-label]::before,
+    .cbi-section-table-row .cbi-section-table-cell[data-label]::before,
+    .cbi-section-table-row .td[data-label]::before,
+    .cbi-section-table .tr .cbi-value-field[data-label]::before,
+    .cbi-section-table .tr .cbi-section-table-cell[data-label]::before,
+    .cbi-section-table .tr .td[data-label]::before {
+        content: attr(data-label) ": ";
         font-weight: 600 !important;
         font-size: 13px !important;
         color: inherit !important;
@@ -220,18 +246,30 @@
     }
     
     .cbi-section-table tr.cbi-section-table-row td[data-label=""]::before,
-    .cbi-section-table tr.cbi-section-table-row td:last-child::before {
+    .cbi-section-table tr.cbi-section-table-row td:last-child::before,
+    .cbi-section-table-row .td[data-label=""]::before,
+    .cbi-section-table-row .td:last-child::before,
+    .cbi-section-table .tr .td[data-label=""]::before,
+    .cbi-section-table .tr .td:last-child::before {
         display: none !important;
     }
 
     .cbi-section-table tr.cbi-section-table-row td input[type="text"],
-    .cbi-section-table tr.cbi-section-table-row td select {
+    .cbi-section-table tr.cbi-section-table-row td select,
+    .cbi-section-table-row td input[type="text"],
+    .cbi-section-table-row td select,
+    .cbi-section-table-row .td input[type="text"],
+    .cbi-section-table-row .td select,
+    .cbi-section-table .tr .td input[type="text"],
+    .cbi-section-table .tr .td select {
         flex: 1 !important;
         width: auto !important;
         min-width: 150px !important;
     }
     
-    .cbi-section-table tr.cbi-section-table-row td .weekday-selector {
+    .cbi-section-table tr.cbi-section-table-row td .weekday-selector,
+    .cbi-section-table-row .weekday-selector,
+    .cbi-section-table .tr .weekday-selector {
         flex: 1 !important;
     }
 }
@@ -267,17 +305,20 @@ function updateLuciWeekdays(cbid) {
 
 (function() {
     function mapTableLabels() {
-        var tables = document.querySelectorAll('.cbi-section-table');
+        var tables = document.querySelectorAll('.cbi-section-table, .table');
         tables.forEach(function(table) {
             var headers = [];
-            var ths = table.querySelectorAll('tr.cbi-section-table-titles th');
+            var ths = table.querySelectorAll('tr.cbi-section-table-titles th, .cbi-section-table-titles .th, .cbi-section-table-titles .cbi-section-table-cell, .thead .th, .thead .td');
             ths.forEach(function(th) {
                 headers.push(th.textContent.trim());
             });
             
-            var rows = table.querySelectorAll('tr.cbi-section-table-row');
+            var rows = table.querySelectorAll('tr.cbi-section-table-row, .cbi-section-table-row, .tr');
             rows.forEach(function(row) {
-                var tds = row.querySelectorAll('td.cbi-value-field, td.cbi-section-table-cell, td.cbi-section-table-descr');
+                if (row.classList.contains('cbi-section-table-titles') || row.classList.contains('thead')) {
+                    return;
+                }
+                var tds = row.querySelectorAll('td.cbi-value-field, td.cbi-section-table-cell, td.cbi-section-table-descr, .cbi-value-field, .cbi-section-table-cell, .td');
                 tds.forEach(function(td, index) {
                     if (headers[index]) {
                         td.setAttribute('data-label', headers[index]);
