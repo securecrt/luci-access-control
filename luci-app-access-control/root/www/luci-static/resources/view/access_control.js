@@ -606,52 +606,54 @@ return view.extend({
 
         // Hook save of firewall map to centralize enabled state calculations
         m2.save = function() {
-            var global_enabled = uci.get('access_control', 'general', 'enabled') === '1';
-            var sections = uci.sections('firewall', 'rule');
-            sections.forEach(function(s) {
-                var ac_enabled = uci.get('firewall', s['.name'], 'ac_enabled');
-                if (ac_enabled !== undefined && ac_enabled !== null) {
-                    if (uci.get('firewall', s['.name'], 'src') !== 'lan') {
-                        uci.set('firewall', s['.name'], 'src', 'lan');
-                    }
-                    if (uci.get('firewall', s['.name'], 'dest') !== 'wan') {
-                        uci.set('firewall', s['.name'], 'dest', 'wan');
-                    }
-                    if (uci.get('firewall', s['.name'], 'target') !== 'REJECT') {
-                        uci.set('firewall', s['.name'], 'target', 'REJECT');
-                    }
-                    if (uci.get('firewall', s['.name'], 'extra') !== undefined) {
-                        uci.remove('firewall', s['.name'], 'extra');
-                    }
-                    if (uci.get('firewall', s['.name'], 'proto') !== undefined) {
-                        uci.remove('firewall', s['.name'], 'proto');
-                    }
-                    if (uci.get('firewall', s['.name'], 'utc_time') !== '0') {
-                        uci.set('firewall', s['.name'], 'utc_time', '0');
-                    }
-                    var rule_enabled = ac_enabled === '1';
-                    var enable = global_enabled && rule_enabled;
-                    if (!enable) {
-                        if (uci.get('firewall', s['.name'], 'ac_suspend') !== undefined) {
-                            uci.remove('firewall', s['.name'], 'ac_suspend');
+            return form.Map.prototype.save.call(this).then(function() {
+                var global_enabled = uci.get('access_control', 'general', 'enabled') === '1';
+                var sections = uci.sections('firewall', 'rule');
+                sections.forEach(function(s) {
+                    var ac_enabled = uci.get('firewall', s['.name'], 'ac_enabled');
+                    if (ac_enabled !== undefined && ac_enabled !== null) {
+                        if (uci.get('firewall', s['.name'], 'src') !== 'lan') {
+                            uci.set('firewall', s['.name'], 'src', 'lan');
                         }
-                    } else {
-                        var ac_susp = uci.get('firewall', s['.name'], 'ac_suspend');
-                        if (ac_susp) {
-                            var now = Math.floor(Date.now() / 1000);
-                            if (now > parseInt(ac_susp, 10)) {
+                        if (uci.get('firewall', s['.name'], 'dest') !== 'wan') {
+                            uci.set('firewall', s['.name'], 'dest', 'wan');
+                        }
+                        if (uci.get('firewall', s['.name'], 'target') !== 'REJECT') {
+                            uci.set('firewall', s['.name'], 'target', 'REJECT');
+                        }
+                        if (uci.get('firewall', s['.name'], 'extra') !== undefined) {
+                            uci.remove('firewall', s['.name'], 'extra');
+                        }
+                        if (uci.get('firewall', s['.name'], 'proto') !== undefined) {
+                            uci.remove('firewall', s['.name'], 'proto');
+                        }
+                        if (uci.get('firewall', s['.name'], 'utc_time') !== '0') {
+                            uci.set('firewall', s['.name'], 'utc_time', '0');
+                        }
+                        var rule_enabled = ac_enabled === '1';
+                        var enable = global_enabled && rule_enabled;
+                        if (!enable) {
+                            if (uci.get('firewall', s['.name'], 'ac_suspend') !== undefined) {
                                 uci.remove('firewall', s['.name'], 'ac_suspend');
-                                ac_susp = null;
+                            }
+                        } else {
+                            var ac_susp = uci.get('firewall', s['.name'], 'ac_suspend');
+                            if (ac_susp) {
+                                var now = Math.floor(Date.now() / 1000);
+                                if (now > parseInt(ac_susp, 10)) {
+                                    uci.remove('firewall', s['.name'], 'ac_suspend');
+                                    ac_susp = null;
+                                }
+                            }
+                            if (ac_susp) {
+                                enable = false;
                             }
                         }
-                        if (ac_susp) {
-                            enable = false;
-                        }
+                        uci.set('firewall', s['.name'], 'enabled', enable ? '1' : '0');
                     }
-                    uci.set('firewall', s['.name'], 'enabled', enable ? '1' : '0');
-                }
+                });
+                uci.save();
             });
-            return form.Map.prototype.save.call(this);
         };
 
         var mapTableLabels = function() {
