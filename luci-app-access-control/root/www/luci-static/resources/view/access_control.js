@@ -172,10 +172,28 @@ return view.extend({
         o = s2.option(form.Value, 'start_time', _('Start time'));
         o.validate = validateTime;
         o.editable = true;
+        o.renderWidget = function(section_id, option_index, cfgvalue) {
+            var node = form.Value.prototype.renderWidget.apply(this, arguments);
+            var input = (node.tagName === 'INPUT') ? node : (node.querySelector ? node.querySelector('input') : null);
+            if (input) {
+                input.setAttribute('type', 'time');
+                input.placeholder = 'HH:MM';
+            }
+            return node;
+        };
 
         o = s2.option(form.Value, 'stop_time', _('End time'));
         o.validate = validateTime;
         o.editable = true;
+        o.renderWidget = function(section_id, option_index, cfgvalue) {
+            var node = form.Value.prototype.renderWidget.apply(this, arguments);
+            var input = (node.tagName === 'INPUT') ? node : (node.querySelector ? node.querySelector('input') : null);
+            if (input) {
+                input.setAttribute('type', 'time');
+                input.placeholder = 'HH:MM';
+            }
+            return node;
+        };
 
         // Custom Weekday render inside modal only
         o = s2.option(form.Value, 'weekdays', _('Weekdays'));
