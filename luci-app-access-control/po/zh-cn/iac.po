@@ -77,23 +77,23 @@ msgstr "时间格式必须为 HH:MM 格式或保持空白"
 msgid "Weekdays"
 msgstr "控制日期"
 
-msgid "Mon"
+msgid "ac_Mon"
 msgstr "一"
 
-msgid "Tue"
+msgid "ac_Tue"
 msgstr "二"
 
-msgid "Wed"
+msgid "ac_Wed"
 msgstr "三"
 
-msgid "Thu"
+msgid "ac_Thu"
 msgstr "四"
 
-msgid "Fri"
+msgid "ac_Fri"
 msgstr "五"
 
-msgid "Sat"
+msgid "ac_Sat"
 msgstr "六"
 
-msgid "Sun"
+msgid "ac_Sun"
 msgstr "日"

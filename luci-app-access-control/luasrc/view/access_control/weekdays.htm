@@ -2,15 +2,17 @@
 
 <%
 local days = {"mon", "tue", "wed", "thu", "fri", "sat", "sun"}
-local day_labels = {
-    translate("Mon"),
-    translate("Tue"),
-    translate("Wed"),
-    translate("Thu"),
-    translate("Fri"),
-    translate("Sat"),
-    translate("Sun")
-}
+local day_labels = {}
+local defaults = {"M", "T", "W", "T", "F", "S", "S"}
+for i, d in ipairs(days) do
+    local key = "ac_" .. d:sub(1,1):upper() .. d:sub(2) -- "ac_Mon", "ac_Tue", etc.
+    local trans = translate(key)
+    if trans == key then
+        day_labels[i] = defaults[i]
+    else
+        day_labels[i] = trans
+    end
+end
 local val = self:cfgvalue(section) or ""
 local checked = {}
 for _, d in ipairs(days) do
