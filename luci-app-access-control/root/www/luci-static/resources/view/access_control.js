@@ -549,6 +549,8 @@ return view.extend({
         // Ticket Button inline in grid
         o = s2.option(form.Button, '_ticket', _('Ticket'));
         o.inputstyle = 'action';
+        o.editable = true;
+        o.modalonly = false;
         o.render = function(section_id, option_index) {
             var ac_susp = uci.get('firewall', section_id, 'ac_suspend');
             var btn = document.createElement('button');
