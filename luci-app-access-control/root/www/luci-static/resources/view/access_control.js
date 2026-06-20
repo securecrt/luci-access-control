@@ -1,5 +1,4 @@
 'use strict';
-'use LuCI';
 'require form';
 'require uci';
 'require view';
