@@ -37,7 +37,8 @@ else
 end
 
 -- Inject custom CSS/JS for responsive design and layout enhancements
-ma:section(Template, "access_control/css")
+local s_css = ma:section(SimpleSection)
+s_css.template = "access_control/css"
 
 function mr.on_after_commit (self)
     os.execute ("/etc/init.d/inetac restart >/dev/null 2>/dev/null")
