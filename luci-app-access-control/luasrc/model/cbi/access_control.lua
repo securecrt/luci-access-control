@@ -29,7 +29,8 @@ local ma = Map(CONFIG_FILE_AC, translate("Internet Access Control"),
     translate("Access Control allows you to manage Internet access for specific local hosts.<br/>\
        Each rule defines when a device should be blocked from having Internet access. The rules may be active permanently or during certain times of the day.<br/>\
        The rules may also be restricted to specific days of the week.<br/>\
-       Any device that is blocked may obtain a ticket suspending the restriction for a specified time."))
+       Any device that is blocked may obtain a ticket suspending the restriction for a specified time.") ..
+    [[<style>.cbi-section-table th { white-space: nowrap; }</style>]])
 if CONFIG_FILE_AC==CONFIG_FILE_RULES then
     mr = ma
 else
