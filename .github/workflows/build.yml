@@ -39,7 +39,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Build Packages
         uses: openwrt/gh-action-sdk@main
@@ -64,7 +64,7 @@ jobs:
           fi
 
       - name: Store package artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: packages-all-${{ github.event.inputs.openwrt_version || env.DEFAULT_OPENWRT_VERSION }}
           path: |
@@ -80,7 +80,7 @@ jobs:
       contents: write
     steps:
       - name: Download all artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           path: packages
           pattern: packages-*
