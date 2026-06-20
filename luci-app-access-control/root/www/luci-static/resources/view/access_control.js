@@ -265,9 +265,6 @@ return view.extend({
                 .access-control-container .cbi-section-table, 
                 .access-control-container .cbi-section-table tbody, 
                 .access-control-container .cbi-section-table tr, 
-                .access-control-container .cbi-section-table td,
-                .access-control-container .cbi-section-table .tr,
-                .access-control-container .cbi-section-table .td,
                 .access-control-container .cbi-section-node {
                     display: block !important;
                     width: 100% !important;
@@ -282,14 +279,17 @@ return view.extend({
                 
                 .access-control-container .cbi-section-table-row,
                 .access-control-container .cbi-section-table .tr {
-                    display: flex !important;
-                    flex-direction: column !important;
+                    display: grid !important;
+                    grid-template-columns: 1fr 1fr !important;
+                    grid-template-rows: auto auto auto auto !important;
+                    grid-row-gap: 8px !important;
+                    grid-column-gap: 12px !important;
                     background: rgba(30, 30, 36, 0.8) !important;
                     border: 1px solid rgba(255, 255, 255, 0.08) !important;
-                    border-radius: 16px !important;
-                    margin-bottom: 24px !important;
-                    padding: 20px !important;
-                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
+                    border-radius: 12px !important;
+                    margin-bottom: 16px !important;
+                    padding: 14px 16px !important;
+                    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
                     box-sizing: border-box !important;
                 }
                 
@@ -297,35 +297,127 @@ return view.extend({
                 .access-control-container .cbi-section-table .tr .td {
                     display: flex !important;
                     align-items: center !important;
-                    justify-content: space-between !important;
-                    padding: 12px 0 !important;
+                    padding: 0 !important;
                     border: none !important;
-                    border-bottom: 1px dashed rgba(255, 255, 255, 0.08) !important;
-                    width: 100% !important;
+                    min-height: 36px !important;
+                    width: auto !important;
                     box-sizing: border-box !important;
-                    min-height: 48px !important;
                 }
                 
-                .access-control-container .cbi-section-table-row td:last-child,
-                .access-control-container .cbi-section-table .tr .td:last-child {
-                    border-bottom: none !important;
-                    justify-content: flex-end !important;
-                    padding-top: 18px !important;
-                    gap: 8px !important;
-                }
-                
-                .access-control-container .cbi-section-table-row td[data-label]::before,
-                .access-control-container .cbi-section-table .tr .td[data-label]::before {
-                    content: attr(data-label) !important;
-                    font-weight: 600 !important;
-                    font-size: 14px !important;
-                    color: #a1a1aa !important;
-                }
-                
-                .access-control-container .cbi-section-table-row td[data-label=""]::before,
+                /* Hide default content labels for columns that don't need them */
+                .access-control-container .cbi-section-table-row td:nth-child(2)::before,
+                .access-control-container .cbi-section-table .tr .td:nth-child(2)::before,
+                .access-control-container .cbi-section-table-row td:nth-child(6)::before,
+                .access-control-container .cbi-section-table .tr .td:nth-child(6)::before,
                 .access-control-container .cbi-section-table-row td:last-child::before,
                 .access-control-container .cbi-section-table .tr .td:last-child::before {
                     display: none !important;
+                }
+
+                /* 1. Checkbox: top left */
+                .access-control-container .cbi-section-table-row td:nth-child(1),
+                .access-control-container .cbi-section-table .tr .td:nth-child(1) {
+                    grid-column: 1 !important;
+                    grid-row: 1 !important;
+                    justify-content: flex-start !important;
+                    gap: 8px !important;
+                }
+                .access-control-container .cbi-section-table-row td:nth-child(1)[data-label]::before,
+                .access-control-container .cbi-section-table .tr .td:nth-child(1)[data-label]::before {
+                    content: attr(data-label) ": " !important;
+                    font-weight: 600 !important;
+                    color: #a1a1aa !important;
+                    font-size: 13px !important;
+                }
+                
+                /* 2. Description: top right, bold blue */
+                .access-control-container .cbi-section-table-row td:nth-child(2),
+                .access-control-container .cbi-section-table .tr .td:nth-child(2) {
+                    grid-column: 2 !important;
+                    grid-row: 1 !important;
+                    justify-content: flex-end !important;
+                    font-weight: 700 !important;
+                    color: #3b82f6 !important;
+                    font-size: 14px !important;
+                }
+                
+                /* 3. Start time: row 2 left */
+                .access-control-container .cbi-section-table-row td:nth-child(3),
+                .access-control-container .cbi-section-table .tr .td:nth-child(3) {
+                    grid-column: 1 !important;
+                    grid-row: 2 !important;
+                    justify-content: flex-start !important;
+                    font-size: 13px !important;
+                }
+                .access-control-container .cbi-section-table-row td:nth-child(3)[data-label]::before,
+                .access-control-container .cbi-section-table .tr .td:nth-child(3)[data-label]::before {
+                    content: attr(data-label) ": " !important;
+                    font-weight: 600 !important;
+                    color: #a1a1aa !important;
+                    font-size: 13px !important;
+                }
+                
+                /* 4. End time: row 2 right */
+                .access-control-container .cbi-section-table-row td:nth-child(4),
+                .access-control-container .cbi-section-table .tr .td:nth-child(4) {
+                    grid-column: 2 !important;
+                    grid-row: 2 !important;
+                    justify-content: flex-end !important;
+                    font-size: 13px !important;
+                }
+                .access-control-container .cbi-section-table-row td:nth-child(4)[data-label]::before,
+                .access-control-container .cbi-section-table .tr .td:nth-child(4)[data-label]::before {
+                    content: attr(data-label) ": " !important;
+                    font-weight: 600 !important;
+                    color: #a1a1aa !important;
+                    font-size: 13px !important;
+                }
+                
+                /* 5. Weekdays: row 3 left */
+                .access-control-container .cbi-section-table-row td:nth-child(5),
+                .access-control-container .cbi-section-table .tr .td:nth-child(5) {
+                    grid-column: 1 !important;
+                    grid-row: 3 !important;
+                    justify-content: flex-start !important;
+                    font-size: 13px !important;
+                }
+                .access-control-container .cbi-section-table-row td:nth-child(5)[data-label]::before,
+                .access-control-container .cbi-section-table .tr .td:nth-child(5)[data-label]::before {
+                    content: attr(data-label) ": " !important;
+                    font-weight: 600 !important;
+                    color: #a1a1aa !important;
+                    font-size: 13px !important;
+                }
+                
+                /* 6. Ticket button: row 3 right */
+                .access-control-container .cbi-section-table-row td:nth-child(6),
+                .access-control-container .cbi-section-table .tr .td:nth-child(6) {
+                    grid-column: 2 !important;
+                    grid-row: 3 !important;
+                    justify-content: flex-end !important;
+                }
+                .access-control-container .cbi-section-table-row td:nth-child(6) .cbi-button,
+                .access-control-container .cbi-section-table .tr .td:nth-child(6) .cbi-button {
+                    padding: 4px 10px !important;
+                    font-size: 12px !important;
+                }
+                
+                /* 7. Action buttons (Edit/Delete/Sort): full width bottom */
+                .access-control-container .cbi-section-table-row td:last-child,
+                .access-control-container .cbi-section-table .tr .td:last-child {
+                    grid-column: 1 / span 2 !important;
+                    grid-row: 4 !important;
+                    justify-content: flex-end !important;
+                    gap: 6px !important;
+                    margin-top: 6px !important;
+                    border-top: 1px dashed rgba(255, 255, 255, 0.08) !important;
+                    padding-top: 8px !important;
+                    min-height: auto !important;
+                }
+                .access-control-container .cbi-section-table-row td:last-child .cbi-button,
+                .access-control-container .cbi-section-table .tr .td:last-child .cbi-button {
+                    padding: 4px 12px !important;
+                    font-size: 12px !important;
                 }
             }
         `;
