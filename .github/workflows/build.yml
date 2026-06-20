@@ -1,0 +1,43 @@
+name: Build OpenWrt IPK
+
+on:
+  push:
+    branches:
+      - '*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: openwrt/sdk:x86-64-23.05.3
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup SDK and Build
+        run: |
+          # 1. Ensure git safe directory
+          git config --global --add safe.directory '*'
+          
+          # 2. Add custom local feed pointing to our repo
+          echo "src-link myapp ${{ github.workspace }}" >> feeds.conf.default
+          
+          # 3. Update and install standard feeds (this gets luci.mk)
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a -p luci
+          
+          # 4. Install our package from the local feed
+          ./scripts/feeds install luci-app-access-control
+          
+          # 5. Fix older Makefile include paths to work with modern SDKs
+          sed -i 's|../../luci.mk|$(TOPDIR)/feeds/luci/luci.mk|g' package/feeds/myapp/luci-app-access-control/Makefile
+          
+          # 6. Build the package
+          make defconfig
+          make package/luci-app-access-control/compile V=s
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: luci-app-access-control-ipk
+          path: bin/packages/x86_64/myapp/*.ipk
