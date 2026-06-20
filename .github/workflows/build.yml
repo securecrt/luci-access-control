@@ -45,7 +45,6 @@ jobs:
         uses: openwrt/gh-action-sdk@main
         env:
           ARCH: x86_64-${{ github.event.inputs.openwrt_version || env.DEFAULT_OPENWRT_VERSION }}
-          PACKAGES: luci-app-access-control
           INDEX: 1
           BUILD_LOG: 1
 
