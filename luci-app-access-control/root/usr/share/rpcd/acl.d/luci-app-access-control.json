@@ -1,0 +1,19 @@
+{
+	"luci-app-access-control": {
+		"description": "Grant access to Internet Access Control operations",
+		"read": {
+			"ubus": {
+				"uci": [ "get", "changes" ],
+				"rc": [ "list" ]
+			},
+			"uci": [ "firewall", "access_control" ]
+		},
+		"write": {
+			"ubus": {
+				"uci": [ "set", "delete", "add", "commit" ],
+				"rc": [ "init" ]
+			},
+			"uci": [ "firewall", "access_control" ]
+		}
+	}
+}

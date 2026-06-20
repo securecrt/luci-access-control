@@ -3,24 +3,11 @@
 'require uci';
 'require view';
 'require rpc';
+'require tools.access_control as iac';
 
 var callHostHints = rpc.declare({
     object: 'luci-rpc',
     method: 'getHostHints',
-    expect: { '': {} }
-});
-
-var callInitAction = rpc.declare({
-    object: 'luci',
-    method: 'setInitAction',
-    params: [ 'name', 'action' ],
-    expect: { '': true }
-});
-
-var callServiceAction = rpc.declare({
-    object: 'rc',
-    method: 'init',
-    params: [ 'name', 'action' ],
     expect: { '': {} }
 });
 
@@ -687,60 +674,41 @@ return view.extend({
             return wrapper;
         };
 
-        // Ticket Button inline in grid
+        // Ticket Button inline in grid — pure UI layer
+        // Business logic (UCI commit + service restart) is in tools/access_control.js
         o = s2.option(form.Button, '_ticket', _('Ticket'));
         o.inputstyle = 'action';
         o.editable = true;
         o.modalonly = false;
         o.render = function(section_id, option_index) {
-            var ac_susp = uci.get('firewall', section_id, 'ac_suspend');
             var btn = document.createElement('button');
             btn.className = 'cbi-button';
 
-            if (ac_susp) {
-                var expiry = parseInt(ac_susp, 10);
-                var now = Math.floor(Date.now() / 1000);
-                if (now > expiry) {
-                    uci.remove('firewall', section_id, 'ac_suspend');
-                    uci.set('firewall', section_id, 'enabled', uci.get('firewall', section_id, 'ac_enabled') === '1' ? '1' : '0');
-                    btn.textContent = _('Issue');
-                    btn.className += ' cbi-button-add';
-                } else {
-                    var date = new Date(expiry * 1000);
-                    var hh = ('0' + date.getHours()).slice(-2);
-                    var mm = ('0' + date.getMinutes()).slice(-2);
-                    btn.textContent = hh + ':' + mm + ' ' + _('Cancel');
-                    btn.className += ' cbi-button-remove';
-                }
+            // --- UI state: read-only, no side effects ---
+            var activeExpiry = iac.getActiveTicketExpiry(section_id);
+            if (activeExpiry) {
+                var date = new Date(activeExpiry * 1000);
+                var hh = ('0' + date.getHours()).slice(-2);
+                var mm = ('0' + date.getMinutes()).slice(-2);
+                btn.textContent = hh + ':' + mm + ' ' + _('Cancel');
+                btn.className += ' cbi-button-remove';
             } else {
                 btn.textContent = _('Issue');
                 btn.className += ' cbi-button-add';
             }
 
-            var self = this;
+            // --- Click handler: delegates entirely to the business module ---
             btn.addEventListener('click', function(ev) {
                 ev.preventDefault();
                 btn.disabled = true;
-                var current_susp = uci.get('firewall', section_id, 'ac_suspend');
-                if (current_susp) {
-                    uci.remove('firewall', section_id, 'ac_suspend');
-                    uci.set('firewall', section_id, 'enabled', uci.get('firewall', section_id, 'ac_enabled') === '1' ? '1' : '0');
-                } else {
-                    var duration = parseInt(uci.get('access_control', 'general', 'ticket'), 10) || 60;
-                    var expiry = Math.floor(Date.now() / 1000) + duration * 60;
-                    uci.set('firewall', section_id, 'ac_suspend', expiry.toString());
-                    uci.set('firewall', section_id, 'enabled', '0');
-                }
-                Promise.resolve(uci.save()).then(function() {
-                    return Promise.resolve(uci.commit('firewall'));
-                }).then(function() {
-                    return Promise.resolve(callServiceAction('firewall', 'restart'));
-                }).then(function() {
-                    return Promise.resolve(callServiceAction('inetac', 'restart'));
-                }).then(function() {
+
+                var isCancel = !!iac.getActiveTicketExpiry(section_id);
+                var duration = parseInt(uci.get('access_control', 'general', 'ticket'), 10) || 60;
+
+                iac.issueTicket(section_id, isCancel, duration).then(function() {
                     location.reload();
                 }).catch(function(err) {
-                    alert('Error: ' + (err.message || err));
+                    alert('Error: ' + (err.message || String(err)));
                     btn.disabled = false;
                 });
             });
