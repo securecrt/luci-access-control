@@ -1,0 +1,5 @@
+* text=auto
+*.lua text eol=lf
+*.sh text eol=lf
+/luci-app-access-control/root/usr/sbin/inetacd.lua text eol=lf
+/luci-app-access-control/root/etc/init.d/inetac text eol=lf

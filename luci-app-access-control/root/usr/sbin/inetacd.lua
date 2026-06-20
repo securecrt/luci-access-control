@@ -16,7 +16,7 @@ $Id$
 This daemon restores internet blocking rules to normal operation after their temporary suspension.
 ]]--
 
-require "uci"
+local uci = require "luci.model.uci"
 
 
 function check ()

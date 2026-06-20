@@ -17,6 +17,13 @@ var callInitAction = rpc.declare({
     expect: { '': true }
 });
 
+var callServiceAction = rpc.declare({
+    object: 'rc',
+    method: 'init',
+    params: [ 'name', 'action' ],
+    expect: { '': {} }
+});
+
 return view.extend({
     load: function() {
         return Promise.all([
@@ -724,12 +731,17 @@ return view.extend({
                     uci.set('firewall', section_id, 'ac_suspend', expiry.toString());
                     uci.set('firewall', section_id, 'enabled', '0');
                 }
-                uci.save().then(function() {
-                    return uci.commit('firewall');
+                Promise.resolve(uci.save()).then(function() {
+                    return Promise.resolve(uci.commit('firewall'));
                 }).then(function() {
-                    return callInitAction('inetac', 'restart');
+                    return Promise.resolve(callServiceAction('firewall', 'restart'));
+                }).then(function() {
+                    return Promise.resolve(callServiceAction('inetac', 'restart'));
                 }).then(function() {
                     location.reload();
+                }).catch(function(err) {
+                    alert('Error: ' + (err.message || err));
+                    btn.disabled = false;
                 });
             });
 
