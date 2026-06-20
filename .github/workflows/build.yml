@@ -52,7 +52,7 @@ jobs:
         uses: openwrt/gh-action-sdk@main
         env:
           ARCH: ${{ matrix.arch }}-${{ github.event.inputs.openwrt_version || env.DEFAULT_OPENWRT_VERSION }}
-          PACKAGES: luci-app-access-control
+          PACKAGES: luci-app-access-control luci-i18n-access-control-zh-cn luci-i18n-access-control-cs luci-i18n-access-control-pl luci-i18n-access-control-sk
           INDEX: 1
           BUILD_LOG: 1
 
@@ -61,8 +61,8 @@ jobs:
         with:
           name: packages-${{ matrix.arch }}-${{ github.event.inputs.openwrt_version || env.DEFAULT_OPENWRT_VERSION }}
           path: |
-            bin/packages/**/*luci-app-access-control*.ipk
-            bin/packages/**/*luci-app-access-control*.apk
+            bin/packages/**/*access-control*.ipk
+            bin/packages/**/*access-control*.apk
 
   release:
     name: Create GitHub Release
