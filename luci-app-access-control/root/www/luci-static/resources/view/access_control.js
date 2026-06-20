@@ -215,10 +215,7 @@ return view.extend({
         document.head.appendChild(style);
 
         m = new form.Map('access_control', _('Internet Access Control'),
-            _('Access Control allows you to manage Internet access for specific local hosts.<br/>\
-               Each rule defines when a device should be blocked from having Internet access. The rules may be active permanently or during certain times of the day.<br/>\
-               The rules may also be restricted to specific days of the week.<br/>\
-               Any device that is blocked may obtain a ticket suspending the restriction for a specified time.'));
+            _('Access Control allows you to manage Internet access for specific local hosts.<br/> Each rule defines a device to block from having Internet access. The rules may be active permanently or during certain times of the day.<br/> The rules may also be restricted to specific days of the week.<br/> Any device that is blocked may obtain a ticket suspending the restriction for a specified time.'));
 
         s = m.section(form.NamedSection, 'general', 'access_control', _('General settings'));
         
@@ -324,11 +321,35 @@ return view.extend({
             return node;
         };
 
-        // Custom Weekday render inside modal only
+        // Custom Weekday render: summary in grid, checkboxes in modal
         o = s2.option(form.Value, 'weekdays', _('Weekdays'));
-        o.modalonly = true;
         o.render = function(section_id, option_index) {
             var val = uci.get('firewall', section_id, 'weekdays') || '';
+
+            // Grid cell rendering (read-only summary)
+            if (option_index !== undefined) {
+                var span = document.createElement('span');
+                if (val === '') {
+                    span.textContent = _('Every day');
+                } else {
+                    var active_days = val.split(' ');
+                    var day_labels = {
+                        'mon': _('ac_Mon') === 'ac_Mon' ? 'M' : _('ac_Mon'),
+                        'tue': _('ac_Tue') === 'ac_Tue' ? 'T' : _('ac_Tue'),
+                        'wed': _('ac_Wed') === 'ac_Wed' ? 'W' : _('ac_Wed'),
+                        'thu': _('ac_Thu') === 'ac_Thu' ? 'T' : _('ac_Thu'),
+                        'fri': _('ac_Fri') === 'ac_Fri' ? 'F' : _('ac_Fri'),
+                        'sat': _('ac_Sat') === 'ac_Sat' ? 'S' : _('ac_Sat'),
+                        'sun': _('ac_Sun') === 'ac_Sun' ? 'S' : _('ac_Sun')
+                    };
+                    var active_labels = active_days.map(function(d) {
+                        return day_labels[d] || d;
+                    });
+                    span.textContent = active_labels.join(' ');
+                }
+                return span;
+            }
+
             var cbid = this.cbid(section_id);
 
             // Container

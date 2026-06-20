@@ -97,3 +97,6 @@ msgstr "六"
 
 msgid "ac_Sun"
 msgstr "日"
+
+msgid "Every day"
+msgstr "每天"
