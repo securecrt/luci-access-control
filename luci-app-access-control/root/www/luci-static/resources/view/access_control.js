@@ -497,31 +497,73 @@ return view.extend({
                     return true;
                 }
             }
-            return _('Time value must be HH:MM:SS or empty');
+            return _('Time value must be HH:MM or empty');
         };
 
         o = s2.option(form.Value, 'start_time', _('Start time'));
         o.validate = validateTime;
+        o.cfgvalue = function(section_id) {
+            var val = uci.get('firewall', section_id, this.option);
+            if (val) {
+                var match = val.match(/^(\d?\d:\d\d)(:\d\d)?$/);
+                if (match) {
+                    return match[1];
+                }
+            }
+            return val;
+        };
+        o.write = function(section_id, value) {
+            if (value) {
+                var match = value.match(/^(\d?\d:\d\d)(:\d\d)?$/);
+                if (match) {
+                    if (!match[2]) {
+                        value = match[1] + ':00';
+                    }
+                }
+            }
+            return uci.set('firewall', section_id, this.option, value);
+        };
         o.renderWidget = function(section_id, option_index, cfgvalue) {
             var node = form.Value.prototype.renderWidget.apply(this, arguments);
             var input = (node.tagName === 'INPUT') ? node : (node.querySelector ? node.querySelector('input') : null);
             if (input) {
                 input.setAttribute('type', 'time');
-                input.setAttribute('step', '1');
-                input.placeholder = 'HH:MM:SS';
+                input.setAttribute('step', '60');
+                input.placeholder = 'HH:MM';
             }
             return node;
         };
 
         o = s2.option(form.Value, 'stop_time', _('End time'));
         o.validate = validateTime;
+        o.cfgvalue = function(section_id) {
+            var val = uci.get('firewall', section_id, this.option);
+            if (val) {
+                var match = val.match(/^(\d?\d:\d\d)(:\d\d)?$/);
+                if (match) {
+                    return match[1];
+                }
+            }
+            return val;
+        };
+        o.write = function(section_id, value) {
+            if (value) {
+                var match = value.match(/^(\d?\d:\d\d)(:\d\d)?$/);
+                if (match) {
+                    if (!match[2]) {
+                        value = match[1] + ':00';
+                    }
+                }
+            }
+            return uci.set('firewall', section_id, this.option, value);
+        };
         o.renderWidget = function(section_id, option_index, cfgvalue) {
             var node = form.Value.prototype.renderWidget.apply(this, arguments);
             var input = (node.tagName === 'INPUT') ? node : (node.querySelector ? node.querySelector('input') : null);
             if (input) {
                 input.setAttribute('type', 'time');
-                input.setAttribute('step', '1');
-                input.placeholder = 'HH:MM:SS';
+                input.setAttribute('step', '60');
+                input.placeholder = 'HH:MM';
             }
             return node;
         };

@@ -71,8 +71,8 @@ msgstr "临时时长 [分钟]"
 msgid "Time granted when a ticket is issued"
 msgstr "生成临时上网卡时授予的上网时长"
 
-msgid "Time value must be HH:MM:SS or empty"
-msgstr "时间格式必须为 HH:MM:SS 格式或保持空白"
+msgid "Time value must be HH:MM or empty"
+msgstr "时间格式必须为 HH:MM 格式或保持空白"
 
 msgid "Weekdays"
 msgstr "控制日期"
