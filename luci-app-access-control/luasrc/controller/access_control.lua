@@ -24,6 +24,6 @@ function index()
 	
 	local page
 	page = entry({"admin", "network", "access_control"}, 
-	    cbi("access_control"), _("Access Control"))
+	    view("access_control"), _("Access Control"))
 	page.dependent = true
 end
