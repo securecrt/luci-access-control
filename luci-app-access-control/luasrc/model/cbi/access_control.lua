@@ -50,8 +50,36 @@ local ma = Map(CONFIG_FILE_AC, translate("Internet Access Control"),
         }
 
         /* Apply natural elastic flex. On PC (table), this is safely ignored. 
-           On mobile, start_time and stop_time share the row. 
-           We let stop_time grow to fill the row so that the 7 days are FORCED to start on a brand new row and never break in the middle! */
+           On mobile, we structure 3 elegant rows using flex math:
+           Row 1: Enabled + Name + MAC (18% + 25% + 57% = 100%)
+           Row 2: Start + Stop (49% + 49% = 98%, forces M to wrap)
+           Row 3: M T W T F S S (14% each, 98%, forces Ticket to wrap) */
+           
+        td[data-name="ac_enabled"] { 
+            flex: 0 0 18% !important; 
+            max-width: 18% !important;
+            text-align: center !important;
+            border: none !important;
+            box-sizing: border-box !important;
+        }
+        /* Center the mobile label for Enabled */
+        td[data-name="ac_enabled"]::before {
+            text-align: center !important; 
+            width: 100% !important; 
+        }
+        
+        td[data-name="name"] { 
+            flex: 0 0 25% !important; 
+            max-width: 25% !important;
+            border: none !important;
+            box-sizing: border-box !important;
+        }
+        td[data-name="src_mac"] { 
+            flex: 1 1 57% !important; 
+            border: none !important;
+            box-sizing: border-box !important;
+        }
+
         td[data-name="start_time"] { 
             flex: 0 0 49% !important; 
             max-width: 49% !important; 
@@ -67,8 +95,8 @@ local ma = Map(CONFIG_FILE_AC, translate("Internet Access Control"),
         /* Make the Enabled checkbox larger for better touch targets, especially on mobile */
         td[data-name="ac_enabled"] input[type="checkbox"] {
             transform: scale(1.6);
-            transform-origin: left center;
-            margin: 4px 0 4px 4px !important;
+            transform-origin: center center;
+            margin: 4px auto !important;
         }
 
     </style>]])
