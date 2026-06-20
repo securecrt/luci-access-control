@@ -64,11 +64,10 @@ local s_rule = mr:section(TypedSection, "rule", translate("Client Rules"))
     s_rule.defaults.ac_suspend = nil
     -- hidden, constant options
     s_rule.defaults.enabled = "0"
-    s_rule.defaults.src     = "*" --"lan", "guest" or enything on local side
+    s_rule.defaults.src     = "lan"
     s_rule.defaults.dest    = "wan"
     s_rule.defaults.target  = "REJECT"
-    s_rule.defaults.proto    = "0"
-    s_rule.defaults.extra = "--kerneltz"
+    s_rule.defaults.proto   = "all"
     
     -- only AC-related rules
     s_rule.filter = function (self, section)
@@ -124,13 +123,24 @@ local s_rule = mr:section(TypedSection, "rule", translate("Client Rules"))
         end)
 
 -----------------------------------------------------------        
+    function time_cfgvalue(self, section)
+        local val = Value.cfgvalue(self, section)
+        if val then
+            local hh, mm = string.match(val, "^(%d?%d):(%d%d)")
+            if hh and mm then
+                return string.format("%02d:%02d", tonumber(hh), tonumber(mm))
+            end
+        end
+        return val
+    end
+
     function validate_time(self, value, section)
         local hh, mm
-        hh,mm = string.match (value, "^(%d?%d):(%d%d)$")
+        hh,mm = string.match (value, "^(%d?%d):(%d%d)")
         hh = tonumber (hh)
         mm = tonumber (mm)
         if hh and mm and hh <= 23 and mm <= 59 then
-            return value
+            return string.format("%02d:%02d:00", hh, mm)
         else
             return nil, translate("Time value must be HH:MM or empty")
         end
@@ -139,10 +149,12 @@ local s_rule = mr:section(TypedSection, "rule", translate("Client Rules"))
     o = s_rule:option(Value, "start_time", translate("Start time"))
         o.rmempty = true  -- do not validae blank
         o.validate = validate_time 
+        o.cfgvalue = time_cfgvalue
         o.size = 5
     o = s_rule:option(Value, "stop_time", translate("End time"))
         o.rmempty = true  -- do not validae blank
         o.validate = validate_time
+        o.cfgvalue = time_cfgvalue
         o.size = 5
         
 -----------------------------------------------------------        
