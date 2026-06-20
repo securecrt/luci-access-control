@@ -436,34 +436,31 @@ return view.extend({
 
         // Custom Weekday render: summary in grid, checkboxes in modal
         o = s2.option(form.Value, 'weekdays', _('Weekdays'));
-        o.render = function(section_id, option_index) {
+        o.textvalue = function(section_id) {
+            var val = uci.get('firewall', section_id, 'weekdays') || '';
+            if (val === '') {
+                return _('Every day');
+            } else {
+                var active_days = val.split(' ');
+                var day_labels = {
+                    'mon': _('ac_Mon') === 'ac_Mon' ? 'M' : _('ac_Mon'),
+                    'tue': _('ac_Tue') === 'ac_Tue' ? 'T' : _('ac_Tue'),
+                    'wed': _('ac_Wed') === 'ac_Wed' ? 'W' : _('ac_Wed'),
+                    'thu': _('ac_Thu') === 'ac_Thu' ? 'T' : _('ac_Thu'),
+                    'fri': _('ac_Fri') === 'ac_Fri' ? 'F' : _('ac_Fri'),
+                    'sat': _('ac_Sat') === 'ac_Sat' ? 'S' : _('ac_Sat'),
+                    'sun': _('ac_Sun') === 'ac_Sun' ? 'S' : _('ac_Sun')
+                };
+                var active_labels = active_days.map(function(d) {
+                    return day_labels[d.toLowerCase()] || d;
+                });
+                return active_labels.join(' ');
+            }
+        };
+
+        o.render = function(section_id) {
             var val = uci.get('firewall', section_id, 'weekdays') || '';
             var val_lower = val.toLowerCase();
-
-            // Grid cell rendering (read-only summary)
-            if (option_index !== undefined) {
-                var span = document.createElement('span');
-                if (val === '') {
-                    span.textContent = _('Every day');
-                } else {
-                    var active_days = val.split(' ');
-                    var day_labels = {
-                        'mon': _('ac_Mon') === 'ac_Mon' ? 'M' : _('ac_Mon'),
-                        'tue': _('ac_Tue') === 'ac_Tue' ? 'T' : _('ac_Tue'),
-                        'wed': _('ac_Wed') === 'ac_Wed' ? 'W' : _('ac_Wed'),
-                        'thu': _('ac_Thu') === 'ac_Thu' ? 'T' : _('ac_Thu'),
-                        'fri': _('ac_Fri') === 'ac_Fri' ? 'F' : _('ac_Fri'),
-                        'sat': _('ac_Sat') === 'ac_Sat' ? 'S' : _('ac_Sat'),
-                        'sun': _('ac_Sun') === 'ac_Sun' ? 'S' : _('ac_Sun')
-                    };
-                    var active_labels = active_days.map(function(d) {
-                        return day_labels[d.toLowerCase()] || d;
-                    });
-                    span.textContent = active_labels.join(' ');
-                }
-                return span;
-            }
-
             var cbid = this.cbid(section_id);
 
             // Container
