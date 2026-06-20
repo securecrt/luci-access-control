@@ -34,15 +34,8 @@ env:
 
 jobs:
   build:
-    name: Build for ${{ matrix.arch }}
+    name: Build Packages
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        arch:
-          - x86_64
-          - aarch64_generic
-          - mips_24kc
 
     steps:
       - name: Checkout code
@@ -51,15 +44,29 @@ jobs:
       - name: Build Packages
         uses: openwrt/gh-action-sdk@main
         env:
-          ARCH: ${{ matrix.arch }}-${{ github.event.inputs.openwrt_version || env.DEFAULT_OPENWRT_VERSION }}
+          ARCH: x86_64-${{ github.event.inputs.openwrt_version || env.DEFAULT_OPENWRT_VERSION }}
           PACKAGES: luci-app-access-control
           INDEX: 1
           BUILD_LOG: 1
 
+      - name: Rename packages to include _all suffix
+        run: |
+          if [ -d bin/packages ]; then
+            find bin/packages/ -type f \( -name "*.apk" -o -name "*.ipk" \) | while read file; do
+              if [[ "$file" != *"_all"* ]]; then
+                dir=$(dirname "$file")
+                base=$(basename "$file")
+                ext="${base##*.}"
+                name="${base%.*}"
+                mv "$file" "$dir/${name}_all.${ext}"
+              fi
+            done
+          fi
+
       - name: Store package artifacts
         uses: actions/upload-artifact@v6
         with:
-          name: packages-${{ matrix.arch }}-${{ github.event.inputs.openwrt_version || env.DEFAULT_OPENWRT_VERSION }}
+          name: packages-all-${{ github.event.inputs.openwrt_version || env.DEFAULT_OPENWRT_VERSION }}
           path: |
             bin/packages/**/*access-control*.ipk
             bin/packages/**/*access-control*.apk
