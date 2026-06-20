@@ -364,6 +364,7 @@ return view.extend({
                 uci.set('firewall', section_id, 'src', 'lan');
                 uci.set('firewall', section_id, 'dest', 'wan');
                 uci.set('firewall', section_id, 'target', 'REJECT');
+                uci.set('firewall', section_id, 'utc_time', '0');
             }
             return section_id;
         };
@@ -619,6 +620,9 @@ return view.extend({
                     }
                     if (uci.get('firewall', s['.name'], 'proto') !== undefined) {
                         uci.remove('firewall', s['.name'], 'proto');
+                    }
+                    if (uci.get('firewall', s['.name'], 'utc_time') !== '0') {
+                        uci.set('firewall', s['.name'], 'utc_time', '0');
                     }
                     var rule_enabled = ac_enabled === '1';
                     var enable = global_enabled && rule_enabled;
