@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: openwrt/sdk:x86-64-23.05.3
+    container: openwrt/sdk:x86-64-snapshot
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -39,5 +39,5 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: luci-app-access-control-ipk
-          path: bin/packages/x86_64/myapp/*.ipk
+          name: luci-app-access-control-apk
+          path: bin/packages/x86_64/myapp/*.apk
