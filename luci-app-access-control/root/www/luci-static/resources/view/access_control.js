@@ -642,10 +642,10 @@ return view.extend({
                     var selected = [];
                     var allChecked = true;
                     var noneChecked = true;
-                    days.forEach(function(day) {
-                        var cb = container.querySelector('#' + cbid.replace(/\./g, '\\.') + '_' + day);
-                        if (cb && cb.checked) {
-                            selected.push(day);
+                    var cbs = container.querySelectorAll('input[type="checkbox"]');
+                    cbs.forEach(function(cb) {
+                        if (cb.checked) {
+                            selected.push(cb.value);
                             noneChecked = false;
                         } else {
                             allChecked = false;
@@ -724,11 +724,12 @@ return view.extend({
                     uci.set('firewall', section_id, 'ac_suspend', expiry.toString());
                     uci.set('firewall', section_id, 'enabled', '0');
                 }
-                uci.save();
-                uci.commit('firewall').then(function() {
-                    callInitAction('inetac', 'restart').then(function() {
-                        location.reload();
-                    });
+                uci.save().then(function() {
+                    return uci.commit('firewall');
+                }).then(function() {
+                    return callInitAction('inetac', 'restart');
+                }).then(function() {
+                    location.reload();
                 });
             });
 
