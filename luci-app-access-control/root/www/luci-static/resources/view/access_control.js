@@ -259,7 +259,6 @@ return view.extend({
         o.rmempty = false;
 
         o = s2.option(form.Value, 'name', _('Description'));
-        o.editable = true;
 
         o = s2.option(form.Value, 'src_mac', _('MAC address'));
         o.datatype = 'macaddr';
@@ -295,7 +294,6 @@ return view.extend({
 
         o = s2.option(form.Value, 'start_time', _('Start time'));
         o.validate = validateTime;
-        o.editable = true;
         o.renderWidget = function(section_id, option_index, cfgvalue) {
             var node = form.Value.prototype.renderWidget.apply(this, arguments);
             var input = (node.tagName === 'INPUT') ? node : (node.querySelector ? node.querySelector('input') : null);
@@ -309,7 +307,6 @@ return view.extend({
 
         o = s2.option(form.Value, 'stop_time', _('End time'));
         o.validate = validateTime;
-        o.editable = true;
         o.renderWidget = function(section_id, option_index, cfgvalue) {
             var node = form.Value.prototype.renderWidget.apply(this, arguments);
             var input = (node.tagName === 'INPUT') ? node : (node.querySelector ? node.querySelector('input') : null);
