@@ -64,6 +64,13 @@ local ma = Map(CONFIG_FILE_AC, translate("Internet Access Control"),
             box-sizing: border-box !important;
         }
 
+        /* Make the Enabled checkbox larger for better touch targets, especially on mobile */
+        td[data-name="ac_enabled"] input[type="checkbox"] {
+            transform: scale(1.6);
+            transform-origin: left center;
+            margin: 4px 0 4px 4px !important;
+        }
+
     </style>]])
 if CONFIG_FILE_AC==CONFIG_FILE_RULES then
     mr = ma
