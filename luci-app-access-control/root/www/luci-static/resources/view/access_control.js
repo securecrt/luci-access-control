@@ -85,6 +85,132 @@ return view.extend({
                 transform: translateY(-1px);
                 box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             }
+
+            /* Responsive layout for mobile (table to card layout) */
+            @media (max-width: 768px) {
+                .cbi-section-table, 
+                .cbi-section-table tbody, 
+                .cbi-section-table tr, 
+                .cbi-section-table td,
+                .cbi-section-table .tr,
+                .cbi-section-table .td,
+                .cbi-section-node,
+                .cbi-section-node-tabbed {
+                    display: block !important;
+                    width: 100% !important;
+                    box-sizing: border-box !important;
+                }
+                
+                .cbi-section-table thead,
+                .cbi-section-table tr.cbi-section-table-titles,
+                .cbi-section-table .thead,
+                .cbi-section-table .cbi-section-table-titles {
+                    display: none !important;
+                }
+                
+                .cbi-section-table tr.cbi-section-table-row,
+                .cbi-section-table-row,
+                .cbi-section-table .tr,
+                .cbi-section-node .tr {
+                    display: flex !important;
+                    flex-direction: column !important;
+                    width: 100% !important;
+                    background: rgba(255, 255, 255, 0.03) !important;
+                    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+                    border-radius: 12px !important;
+                    margin-bottom: 20px !important;
+                    padding: 16px !important;
+                    box-shadow: 0 4px 6px rgba(0,0,0,0.15) !important;
+                    position: relative !important;
+                    box-sizing: border-box !important;
+                }
+                
+                .cbi-section-table tr.cbi-section-table-row td.cbi-value-field,
+                .cbi-section-table tr.cbi-section-table-row td.cbi-section-table-cell,
+                .cbi-section-table-row .cbi-value-field,
+                .cbi-section-table-row .cbi-section-table-cell,
+                .cbi-section-table-row .td,
+                .cbi-section-table .tr .cbi-value-field,
+                .cbi-section-table .tr .cbi-section-table-cell,
+                .cbi-section-table .tr .td,
+                .cbi-section-node .tr .td {
+                    display: flex !important;
+                    align-items: center !important;
+                    justify-content: flex-start !important;
+                    padding: 10px 0 !important;
+                    border: none !important;
+                    border-bottom: 1px dashed rgba(255, 255, 255, 0.08) !important;
+                    text-align: left !important;
+                    flex-wrap: wrap !important;
+                    min-height: 45px !important;
+                    width: 100% !important;
+                    box-sizing: border-box !important;
+                }
+                
+                .cbi-section-table tr.cbi-section-table-row td:last-child,
+                .cbi-section-table-row .cbi-value-field:last-child,
+                .cbi-section-table-row .cbi-section-table-cell:last-child,
+                .cbi-section-table-row .td:last-child,
+                .cbi-section-table .tr .cbi-value-field:last-child,
+                .cbi-section-table .tr .cbi-section-table-cell:last-child,
+                .cbi-section-table .tr .td:last-child,
+                .cbi-section-node .tr .td:last-child {
+                    border-bottom: none !important;
+                    justify-content: flex-end !important;
+                    padding-top: 14px !important;
+                }
+
+                .cbi-section-table tr.cbi-section-table-row td[data-label]::before,
+                .cbi-section-table-row .cbi-value-field[data-label]::before,
+                .cbi-section-table-row .cbi-section-table-cell[data-label]::before,
+                .cbi-section-table-row .td[data-label]::before,
+                .cbi-section-table .tr .cbi-value-field[data-label]::before,
+                .cbi-section-table .tr .cbi-section-table-cell[data-label]::before,
+                .cbi-section-table .tr .td[data-label]::before,
+                .cbi-section-node .tr .td[data-label]::before {
+                    content: attr(data-label) ": ";
+                    font-weight: 600 !important;
+                    font-size: 13px !important;
+                    color: inherit !important;
+                    opacity: 0.85 !important;
+                    width: 100px !important;
+                    min-width: 100px !important;
+                    display: inline-block !important;
+                    margin-right: 12px !important;
+                }
+                
+                .cbi-section-table tr.cbi-section-table-row td[data-label=""]::before,
+                .cbi-section-table tr.cbi-section-table-row td:last-child::before,
+                .cbi-section-table-row .td[data-label=""]::before,
+                .cbi-section-table-row .td:last-child::before,
+                .cbi-section-table .tr .td[data-label=""]::before,
+                .cbi-section-table .tr .td:last-child::before,
+                .cbi-section-node .tr .td:last-child::before {
+                    display: none !important;
+                }
+
+                .cbi-section-table tr.cbi-section-table-row td input[type="text"],
+                .cbi-section-table tr.cbi-section-table-row td select,
+                .cbi-section-table-row td input[type="text"],
+                .cbi-section-table-row td select,
+                .cbi-section-table-row .td input[type="text"],
+                .cbi-section-table-row .td select,
+                .cbi-section-table .tr .td input[type="text"],
+                .cbi-section-table .tr .td select,
+                .cbi-section-node .tr .td input[type="text"],
+                .cbi-section-node .tr .td select {
+                    flex: 1 !important;
+                    width: auto !important;
+                    min-width: 150px !important;
+                }
+                
+                .cbi-section-table tr.cbi-section-table-row td .weekday-selector,
+                .cbi-section-table-row .weekday-selector,
+                .cbi-section-table .tr .weekday-selector,
+                .cbi-section-node .tr .weekday-selector {
+                    flex: 1 !important;
+                }
+            }
         `;
         document.head.appendChild(style);
 
@@ -369,6 +495,42 @@ return view.extend({
             return form.Map.prototype.save.call(this);
         };
 
+        var mapTableLabels = function() {
+            var tables = document.querySelectorAll('.cbi-section-table, .table, .cbi-section-node');
+            tables.forEach(function(table) {
+                var headers = [];
+                var ths = table.querySelectorAll('tr.cbi-section-table-titles th, .cbi-section-table-titles .th, .cbi-section-table-titles .cbi-section-table-cell, .thead .th, .thead .td, .tr.cbi-section-table-titles .th');
+                ths.forEach(function(th) {
+                    headers.push(th.textContent.trim());
+                });
+                
+                var rows = table.querySelectorAll('tr.cbi-section-table-row, .cbi-section-table-row, .tr');
+                rows.forEach(function(row) {
+                    if (row.classList.contains('cbi-section-table-titles') || row.classList.contains('thead') || row.classList.contains('cbi-section-actions')) {
+                        return;
+                    }
+                    var tds = row.querySelectorAll('td.cbi-value-field, td.cbi-section-table-cell, td.cbi-section-table-descr, .cbi-value-field, .cbi-section-table-cell, .td');
+                    tds.forEach(function(td, index) {
+                        if (headers[index]) {
+                            td.setAttribute('data-label', headers[index]);
+                        }
+                    });
+                });
+            });
+        };
+
+        var observer = new MutationObserver(function(mutations) {
+            var run = false;
+            mutations.forEach(function(mutation) {
+                if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+                    run = true;
+                }
+            });
+            if (run) {
+                mapTableLabels();
+            }
+        });
+
         return Promise.all([
             m.render(),
             m2.render()
@@ -376,6 +538,11 @@ return view.extend({
             var container = document.createElement('div');
             container.appendChild(nodes[0]);
             container.appendChild(nodes[1]);
+            
+            setTimeout(mapTableLabels, 150);
+            var target = container.querySelector('.cbi-map') || container;
+            observer.observe(target, { childList: true, subtree: true });
+            
             return container;
         });
     }

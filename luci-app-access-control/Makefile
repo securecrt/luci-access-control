@@ -42,5 +42,16 @@ end
 endef
 
 include $(TOPDIR)/feeds/luci/luci.mk
+
+define Package/luci-app-access-control-translations-force
+  SECTION:=luci
+  CATEGORY:=LuCI
+  TITLE:=Force Translation Packages Compilation
+  DEPENDS:=+luci-i18n-access-control-zh-cn +luci-i18n-access-control-cs +luci-i18n-access-control-pl +luci-i18n-access-control-sk
+  DEFAULT:=y
+endef
+
+$(eval $(call BuildPackage,luci-app-access-control-translations-force))
+
 #
 # call BuildPackage - OpenWrt buildroot signature
