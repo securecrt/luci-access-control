@@ -284,15 +284,16 @@ return view.extend({
             if (value === '' || value === null || value === undefined) {
                 return true;
             }
-            var match = value.match(/^(\d?\d):(\d\d)$/);
+            var match = value.match(/^(\d?\d):(\d\d)(?::(\d\d))?$/);
             if (match) {
                 var hh = parseInt(match[1], 10);
                 var mm = parseInt(match[2], 10);
-                if (hh <= 23 && mm <= 59) {
+                var ss = match[3] ? parseInt(match[3], 10) : 0;
+                if (hh <= 23 && mm <= 59 && ss <= 59) {
                     return true;
                 }
             }
-            return _('Time value must be HH:MM or empty');
+            return _('Time value must be HH:MM:SS or empty');
         };
 
         o = s2.option(form.Value, 'start_time', _('Start time'));
@@ -303,7 +304,8 @@ return view.extend({
             var input = (node.tagName === 'INPUT') ? node : (node.querySelector ? node.querySelector('input') : null);
             if (input) {
                 input.setAttribute('type', 'time');
-                input.placeholder = 'HH:MM';
+                input.setAttribute('step', '1');
+                input.placeholder = 'HH:MM:SS';
             }
             return node;
         };
@@ -316,7 +318,8 @@ return view.extend({
             var input = (node.tagName === 'INPUT') ? node : (node.querySelector ? node.querySelector('input') : null);
             if (input) {
                 input.setAttribute('type', 'time');
-                input.placeholder = 'HH:MM';
+                input.setAttribute('step', '1');
+                input.placeholder = 'HH:MM:SS';
             }
             return node;
         };
