@@ -28,11 +28,11 @@ return view.extend({
         style.textContent = `
             .weekday-selector {
                 display: flex !important;
-                gap: 5px !important;
+                gap: 6px !important;
                 flex-wrap: wrap !important;
                 align-items: center !important;
                 justify-content: flex-start !important;
-                margin-top: 5px !important;
+                margin-top: 6px !important;
             }
             .weekday-selector input[type="checkbox"] {
                 display: none !important;
@@ -41,174 +41,278 @@ return view.extend({
                 display: inline-flex !important;
                 align-items: center !important;
                 justify-content: center !important;
-                width: 32px !important;
-                height: 32px !important;
+                width: 34px !important;
+                height: 34px !important;
                 border-radius: 50% !important;
-                border: 1px solid rgba(0, 0, 0, 0.15) !important;
-                background-color: rgba(0, 0, 0, 0.03) !important;
-                color: inherit !important;
-                font-size: 12px !important;
+                border: 1px solid rgba(255, 255, 255, 0.12) !important;
+                background-color: rgba(255, 255, 255, 0.05) !important;
+                color: #e4e4e7 !important;
+                font-size: 13px !important;
                 font-weight: 600 !important;
                 cursor: pointer !important;
                 user-select: none !important;
-                transition: all 0.2s ease !important;
-                margin: 0 2px !important;
+                transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                margin: 2px !important;
                 padding: 0 !important;
             }
             .weekday-selector input[type="checkbox"]:checked + label {
-                background-color: #3b82f6 !important;
+                background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
                 border-color: #3b82f6 !important;
                 color: #ffffff !important;
-                box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3) !important;
+                box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4) !important;
+                transform: scale(1.05) !important;
             }
             .weekday-selector label.sunday {
-                color: #ef4444 !important;
-                border-color: rgba(239, 68, 68, 0.3) !important;
+                color: #f87171 !important;
+                border-color: rgba(248, 113, 113, 0.2) !important;
             }
             .weekday-selector input[type="checkbox"]:checked + label.sunday {
-                background-color: #ef4444 !important;
+                background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
                 border-color: #ef4444 !important;
                 color: #ffffff !important;
-                box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3) !important;
+                box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4) !important;
             }
             .weekday-selector label.saturday {
-                color: #f97316 !important;
-                border-color: rgba(249, 115, 22, 0.3) !important;
+                color: #fb923c !important;
+                border-color: rgba(251, 146, 60, 0.2) !important;
             }
             .weekday-selector input[type="checkbox"]:checked + label.saturday {
-                background-color: #f97316 !important;
+                background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
                 border-color: #f97316 !important;
                 color: #ffffff !important;
-                box-shadow: 0 2px 4px rgba(249, 115, 22, 0.3) !important;
+                box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4) !important;
             }
             .weekday-selector label:hover {
-                transform: translateY(-1px);
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                transform: translateY(-1px) scale(1.03) !important;
+                border-color: rgba(255, 255, 255, 0.25) !important;
+                background-color: rgba(255, 255, 255, 0.08) !important;
             }
 
-            /* Responsive layout for mobile (table to card layout) */
+            /* Custom UI Styling Overrides under container */
+            .access-control-container .cbi-section {
+                background: rgba(30, 30, 36, 0.6) !important;
+                border: 1px solid rgba(255, 255, 255, 0.06) !important;
+                border-radius: 16px !important;
+                padding: 24px !important;
+                margin-bottom: 28px !important;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25) !important;
+                backdrop-filter: blur(12px) !important;
+            }
+            .access-control-container h2,
+            .access-control-container h3,
+            .access-control-container .cbi-section-title {
+                color: #3b82f6 !important;
+                font-size: 1.25rem !important;
+                font-weight: 700 !important;
+                letter-spacing: -0.02em !important;
+                margin-bottom: 20px !important;
+                border-bottom: none !important;
+            }
+            .access-control-container .cbi-section-table {
+                width: 100% !important;
+                border-collapse: separate !important;
+                border-spacing: 0 8px !important;
+                margin-top: 12px !important;
+            }
+            .access-control-container .cbi-section-table-titles th {
+                background: rgba(37, 37, 41, 0.8) !important;
+                color: #a1a1aa !important;
+                font-weight: 600 !important;
+                text-transform: uppercase !important;
+                font-size: 0.75rem !important;
+                letter-spacing: 0.05em !important;
+                padding: 14px 16px !important;
+                border: none !important;
+            }
+            .access-control-container .cbi-section-table-titles th:first-child {
+                border-radius: 10px 0 0 10px !important;
+            }
+            .access-control-container .cbi-section-table-titles th:last-child {
+                border-radius: 0 10px 10px 0 !important;
+            }
+            .access-control-container .cbi-section-table-row {
+                background: rgba(32, 32, 36, 0.7) !important;
+                transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            }
+            .access-control-container .cbi-section-table-row:hover {
+                background: rgba(39, 39, 44, 0.9) !important;
+                transform: translateY(-2px) !important;
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2) !important;
+            }
+            .access-control-container .cbi-section-table-row td {
+                padding: 14px 16px !important;
+                border: none !important;
+                border-top: 1px solid rgba(255, 255, 255, 0.03) !important;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.03) !important;
+                color: #e4e4e7 !important;
+                vertical-align: middle !important;
+                font-size: 13px !important;
+            }
+            .access-control-container .cbi-section-table-row td:first-child {
+                border-left: 1px solid rgba(255, 255, 255, 0.03) !important;
+                border-radius: 10px 0 0 10px !important;
+            }
+            .access-control-container .cbi-section-table-row td:last-child {
+                border-right: 1px solid rgba(255, 255, 255, 0.03) !important;
+                border-radius: 0 10px 10px 0 !important;
+            }
+            .access-control-container .cbi-button {
+                border-radius: 8px !important;
+                font-weight: 600 !important;
+                font-size: 13px !important;
+                padding: 8px 16px !important;
+                transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                border: none !important;
+                cursor: pointer !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                gap: 6px !important;
+            }
+            .access-control-container .cbi-button-add {
+                background: #2563eb !important;
+                color: #ffffff !important;
+            }
+            .access-control-container .cbi-button-add:hover {
+                background: #1d4ed8 !important;
+                box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35) !important;
+            }
+            .access-control-container .cbi-button-remove {
+                background: #dc2626 !important;
+                color: #ffffff !important;
+            }
+            .access-control-container .cbi-button-remove:hover {
+                background: #b91c1c !important;
+                box-shadow: 0 4px 12px rgba(220, 38, 38, 0.35) !important;
+            }
+            .access-control-container .cbi-button-reset {
+                background: #4b5563 !important;
+                color: #ffffff !important;
+            }
+            .access-control-container .cbi-button-reset:hover {
+                background: #374151 !important;
+            }
+            .access-control-container .cbi-button-action,
+            .access-control-container .cbi-button.action {
+                background: #0d9488 !important;
+                color: #ffffff !important;
+            }
+            .access-control-container .cbi-button-action:hover,
+            .access-control-container .cbi-button.action:hover {
+                background: #0f766e !important;
+                box-shadow: 0 4px 12px rgba(13, 148, 136, 0.35) !important;
+            }
+            .access-control-container .cbi-value {
+                padding: 18px 0 !important;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+                display: flex !important;
+                align-items: center !important;
+                flex-wrap: wrap !important;
+            }
+            .access-control-container .cbi-value:last-child {
+                border-bottom: none !important;
+            }
+            .access-control-container .cbi-value-title {
+                font-weight: 600 !important;
+                color: #e4e4e7 !important;
+                width: 180px !important;
+                min-width: 180px !important;
+                font-size: 14px !important;
+            }
+            .access-control-container .cbi-value-field {
+                flex: 1 !important;
+                color: #a1a1aa !important;
+                font-size: 13px !important;
+            }
+            .access-control-container input[type="text"],
+            .access-control-container select {
+                background: #141416 !important;
+                border: 1px solid rgba(255, 255, 255, 0.12) !important;
+                color: #ffffff !important;
+                border-radius: 8px !important;
+                padding: 8px 12px !important;
+                font-size: 14px !important;
+                transition: all 0.2s ease !important;
+                outline: none !important;
+            }
+            .access-control-container input[type="text"]:focus,
+            .access-control-container select:focus {
+                border-color: #3b82f6 !important;
+                box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25) !important;
+            }
+            .access-control-container input[type="checkbox"] {
+                width: 18px !important;
+                height: 18px !important;
+                accent-color: #3b82f6 !important;
+                cursor: pointer !important;
+            }
+
+            /* Responsive layout for mobile (table to card layout) matching conceptual mockup */
             @media (max-width: 768px) {
-                .cbi-section-table, 
-                .cbi-section-table tbody, 
-                .cbi-section-table tr, 
-                .cbi-section-table td,
-                .cbi-section-table .tr,
-                .cbi-section-table .td,
-                .cbi-section-node,
-                .cbi-section-node-tabbed {
+                .access-control-container .cbi-section-table, 
+                .access-control-container .cbi-section-table tbody, 
+                .access-control-container .cbi-section-table tr, 
+                .access-control-container .cbi-section-table td,
+                .access-control-container .cbi-section-table .tr,
+                .access-control-container .cbi-section-table .td,
+                .access-control-container .cbi-section-node {
                     display: block !important;
                     width: 100% !important;
                     box-sizing: border-box !important;
                 }
                 
-                .cbi-section-table thead,
-                .cbi-section-table tr.cbi-section-table-titles,
-                .cbi-section-table .thead,
-                .cbi-section-table .cbi-section-table-titles {
+                .access-control-container .cbi-section-table thead,
+                .access-control-container .cbi-section-table tr.cbi-section-table-titles,
+                .access-control-container .cbi-section-table .thead {
                     display: none !important;
                 }
                 
-                .cbi-section-table tr.cbi-section-table-row,
-                .cbi-section-table-row,
-                .cbi-section-table .tr,
-                .cbi-section-node .tr {
+                .access-control-container .cbi-section-table-row,
+                .access-control-container .cbi-section-table .tr {
                     display: flex !important;
                     flex-direction: column !important;
-                    width: 100% !important;
-                    background: rgba(255, 255, 255, 0.03) !important;
+                    background: rgba(30, 30, 36, 0.8) !important;
                     border: 1px solid rgba(255, 255, 255, 0.08) !important;
-                    border-radius: 12px !important;
-                    margin-bottom: 20px !important;
-                    padding: 16px !important;
-                    box-shadow: 0 4px 6px rgba(0,0,0,0.15) !important;
-                    position: relative !important;
+                    border-radius: 16px !important;
+                    margin-bottom: 24px !important;
+                    padding: 20px !important;
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
                     box-sizing: border-box !important;
                 }
                 
-                .cbi-section-table tr.cbi-section-table-row td.cbi-value-field,
-                .cbi-section-table tr.cbi-section-table-row td.cbi-section-table-cell,
-                .cbi-section-table-row .cbi-value-field,
-                .cbi-section-table-row .cbi-section-table-cell,
-                .cbi-section-table-row .td,
-                .cbi-section-table .tr .cbi-value-field,
-                .cbi-section-table .tr .cbi-section-table-cell,
-                .cbi-section-table .tr .td,
-                .cbi-section-node .tr .td {
+                .access-control-container .cbi-section-table-row td,
+                .access-control-container .cbi-section-table .tr .td {
                     display: flex !important;
                     align-items: center !important;
-                    justify-content: flex-start !important;
-                    padding: 10px 0 !important;
+                    justify-content: space-between !important;
+                    padding: 12px 0 !important;
                     border: none !important;
                     border-bottom: 1px dashed rgba(255, 255, 255, 0.08) !important;
-                    text-align: left !important;
-                    flex-wrap: wrap !important;
-                    min-height: 45px !important;
                     width: 100% !important;
                     box-sizing: border-box !important;
+                    min-height: 48px !important;
                 }
                 
-                .cbi-section-table tr.cbi-section-table-row td:last-child,
-                .cbi-section-table-row .cbi-value-field:last-child,
-                .cbi-section-table-row .cbi-section-table-cell:last-child,
-                .cbi-section-table-row .td:last-child,
-                .cbi-section-table .tr .cbi-value-field:last-child,
-                .cbi-section-table .tr .cbi-section-table-cell:last-child,
-                .cbi-section-table .tr .td:last-child,
-                .cbi-section-node .tr .td:last-child {
+                .access-control-container .cbi-section-table-row td:last-child,
+                .access-control-container .cbi-section-table .tr .td:last-child {
                     border-bottom: none !important;
                     justify-content: flex-end !important;
-                    padding-top: 14px !important;
+                    padding-top: 18px !important;
+                    gap: 8px !important;
                 }
-
-                .cbi-section-table tr.cbi-section-table-row td[data-label]::before,
-                .cbi-section-table-row .cbi-value-field[data-label]::before,
-                .cbi-section-table-row .cbi-section-table-cell[data-label]::before,
-                .cbi-section-table-row .td[data-label]::before,
-                .cbi-section-table .tr .cbi-value-field[data-label]::before,
-                .cbi-section-table .tr .cbi-section-table-cell[data-label]::before,
-                .cbi-section-table .tr .td[data-label]::before,
-                .cbi-section-node .tr .td[data-label]::before {
-                    content: attr(data-label) ": ";
+                
+                .access-control-container .cbi-section-table-row td[data-label]::before,
+                .access-control-container .cbi-section-table .tr .td[data-label]::before {
+                    content: attr(data-label) !important;
                     font-weight: 600 !important;
-                    font-size: 13px !important;
-                    color: inherit !important;
-                    opacity: 0.85 !important;
-                    width: 100px !important;
-                    min-width: 100px !important;
-                    display: inline-block !important;
-                    margin-right: 12px !important;
+                    font-size: 14px !important;
+                    color: #a1a1aa !important;
                 }
                 
-                .cbi-section-table tr.cbi-section-table-row td[data-label=""]::before,
-                .cbi-section-table tr.cbi-section-table-row td:last-child::before,
-                .cbi-section-table-row .td[data-label=""]::before,
-                .cbi-section-table-row .td:last-child::before,
-                .cbi-section-table .tr .td[data-label=""]::before,
-                .cbi-section-table .tr .td:last-child::before,
-                .cbi-section-node .tr .td:last-child::before {
+                .access-control-container .cbi-section-table-row td[data-label=""]::before,
+                .access-control-container .cbi-section-table-row td:last-child::before,
+                .access-control-container .cbi-section-table .tr .td:last-child::before {
                     display: none !important;
-                }
-
-                .cbi-section-table tr.cbi-section-table-row td input[type="text"],
-                .cbi-section-table tr.cbi-section-table-row td select,
-                .cbi-section-table-row td input[type="text"],
-                .cbi-section-table-row td select,
-                .cbi-section-table-row .td input[type="text"],
-                .cbi-section-table-row .td select,
-                .cbi-section-table .tr .td input[type="text"],
-                .cbi-section-table .tr .td select,
-                .cbi-section-node .tr .td input[type="text"],
-                .cbi-section-node .tr .td select {
-                    flex: 1 !important;
-                    width: auto !important;
-                    min-width: 150px !important;
-                }
-                
-                .cbi-section-table tr.cbi-section-table-row td .weekday-selector,
-                .cbi-section-table-row .weekday-selector,
-                .cbi-section-table .tr .weekday-selector,
-                .cbi-section-node .tr .weekday-selector {
-                    flex: 1 !important;
                 }
             }
         `;
@@ -559,6 +663,7 @@ return view.extend({
             m2.render()
         ]).then(function(nodes) {
             var container = document.createElement('div');
+            container.className = 'access-control-container';
             container.appendChild(nodes[0]);
             container.appendChild(nodes[1]);
             
