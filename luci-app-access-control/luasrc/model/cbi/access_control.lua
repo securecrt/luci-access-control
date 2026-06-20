@@ -30,7 +30,41 @@ local ma = Map(CONFIG_FILE_AC, translate("Internet Access Control"),
        Each rule defines when a device should be blocked from having Internet access. The rules may be active permanently or during certain times of the day.<br/>\
        The rules may also be restricted to specific days of the week.<br/>\
        Any device that is blocked may obtain a ticket suspending the restriction for a specified time.") ..
-    [[<style>.cbi-section-table th { white-space: nowrap; }</style>]])
+    [[<style>
+        .cbi-section-table th { white-space: nowrap; }
+        .cbi-section-table input[name*="start_time"], .cbi-section-table input[name*="stop_time"] { width: 70px !important; text-align: center; }
+        
+        /* Apply natural elastic flex to the 7 days. 14% flex-basis guarantees they wrap to a new line (since the previous line is 98% full) and exactly 7 of them will fill the new row evenly! */
+        td[data-name="mon"], td[data-name="tue"], td[data-name="wed"], td[data-name="thu"], td[data-name="fri"], td[data-name="sat"], td[data-name="sun"] { 
+            flex: 1 1 14% !important; 
+            text-align: center !important; 
+            border: none !important;
+            padding: 8px 0 !important;
+        }
+        
+        /* Center the mobile labels for the 7 days without overriding their native 'display' state */
+        td[data-name="mon"]::before, td[data-name="tue"]::before, td[data-name="wed"]::before, td[data-name="thu"]::before, td[data-name="fri"]::before, td[data-name="sat"]::before, td[data-name="sun"]::before { 
+            text-align: center !important; 
+            width: 100% !important; 
+            padding-bottom: 4px;
+        }
+
+        /* Apply natural elastic flex. On PC (table), this is safely ignored. 
+           On mobile, start_time and stop_time share the row. 
+           We let stop_time grow to fill the row so that the 7 days are FORCED to start on a brand new row and never break in the middle! */
+        td[data-name="start_time"] { 
+            flex: 0 0 49% !important; 
+            max-width: 49% !important; 
+            border: none !important;
+            box-sizing: border-box !important;
+        }
+        td[data-name="stop_time"] { 
+            flex: 1 1 49% !important; 
+            border: none !important;
+            box-sizing: border-box !important;
+        }
+
+    </style>]])
 if CONFIG_FILE_AC==CONFIG_FILE_RULES then
     mr = ma
 else
@@ -162,9 +196,6 @@ local s_rule = mr:section(TypedSection, "rule", translate("Client Rules"))
     function make_day (nday)
         local day = Days[nday]
         local label = Days1:sub (nday,nday)
-        if nday==7 then
-            label = '<font color="red">'..label..'</font>'
-        end         
         local o = s_rule:option(Flag, day, label)
         o.rmempty = false  --  always call write
         
