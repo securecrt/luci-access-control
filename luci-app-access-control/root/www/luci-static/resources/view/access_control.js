@@ -609,8 +609,14 @@ return view.extend({
             sections.forEach(function(s) {
                 var ac_enabled = uci.get('firewall', s['.name'], 'ac_enabled');
                 if (ac_enabled !== undefined && ac_enabled !== null) {
-                    if (uci.get('firewall', s['.name'], 'src') === '*') {
+                    if (uci.get('firewall', s['.name'], 'src') !== 'lan') {
                         uci.set('firewall', s['.name'], 'src', 'lan');
+                    }
+                    if (uci.get('firewall', s['.name'], 'dest') !== 'wan') {
+                        uci.set('firewall', s['.name'], 'dest', 'wan');
+                    }
+                    if (uci.get('firewall', s['.name'], 'target') !== 'REJECT') {
+                        uci.set('firewall', s['.name'], 'target', 'REJECT');
                     }
                     if (uci.get('firewall', s['.name'], 'extra') !== undefined) {
                         uci.remove('firewall', s['.name'], 'extra');
