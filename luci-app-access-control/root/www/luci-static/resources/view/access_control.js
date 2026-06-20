@@ -478,7 +478,9 @@ return view.extend({
                     var rule_enabled = ac_enabled === '1';
                     var enable = global_enabled && rule_enabled;
                     if (!enable) {
-                        uci.remove('firewall', s['.name'], 'ac_suspend');
+                        if (uci.get('firewall', s['.name'], 'ac_suspend') !== undefined) {
+                            uci.remove('firewall', s['.name'], 'ac_suspend');
+                        }
                     } else {
                         var ac_susp = uci.get('firewall', s['.name'], 'ac_suspend');
                         if (ac_susp) {
