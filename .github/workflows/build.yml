@@ -50,6 +50,7 @@ jobs:
           PACKAGES: luci-app-access-control
           INDEX: 1
           BUILD_LOG: 1
+          PRIVATE_KEY: ${{ secrets.APK_SIGNING_KEY }}
 
       - name: Store package artifacts
         uses: actions/upload-artifact@v6
@@ -58,25 +59,6 @@ jobs:
           path: |
             bin/packages/**/*access-control*.ipk
             bin/packages/**/*access-control*.apk
-
-      - name: Sign APK index (fallback - re-sign with apk adbsign)
-        env:
-          APK_SIGNING_KEY: ${{ secrets.APK_SIGNING_KEY }}
-        run: |
-          if [ -n "$APK_SIGNING_KEY" ]; then
-            docker run --rm -v "$PWD":/workspace -w /workspace -e APK_SIGNING_KEY="$APK_SIGNING_KEY" alpine:latest sh -c '
-              apk add --no-cache apk-tools &&
-              echo "$APK_SIGNING_KEY" > /tmp/signing.key &&
-              chmod 600 /tmp/signing.key &&
-              find /workspace/bin/packages/ -name "packages.adb" | while read f; do
-                echo "Re-signing: $f"
-                apk adbsign --sign-key /tmp/signing.key "$f" && echo "OK: $f" || echo "WARN: failed $f"
-              done
-              rm -f /tmp/signing.key
-            '
-          else
-            echo "Warning: APK_SIGNING_KEY not set, skipping re-sign."
-          fi
 
       - name: Copy keys for deployment
         run: |
