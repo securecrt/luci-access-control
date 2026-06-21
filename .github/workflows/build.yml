@@ -51,19 +51,6 @@ jobs:
           INDEX: 1
           BUILD_LOG: 1
 
-      - name: Rename packages to include _all suffix
-        run: |
-          if [ -d bin/packages ]; then
-            find bin/packages/ -type f \( -name "*.apk" -o -name "*.ipk" \) | while read file; do
-              if [[ "$file" != *"_all"* ]]; then
-                dir=$(dirname "$file")
-                base=$(basename "$file")
-                ext="${base##*.}"
-                name="${base%.*}"
-                mv "$file" "$dir/${name}_all.${ext}"
-              fi
-            done
-          fi
 
       - name: Store package artifacts
         uses: actions/upload-artifact@v6
