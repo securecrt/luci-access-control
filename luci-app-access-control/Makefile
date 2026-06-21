@@ -26,6 +26,18 @@ define Package/luci-app-access-control/prerm
 if [ -z "$${IPKG_INSTROOT}" ]; then
 	/etc/init.d/inetac stop
 	/etc/init.d/inetac disable
+
+	# Remove all firewall rules managed by access control to restore internet
+	rules=$$(uci show firewall | grep "\.ac_enabled=" | cut -d'.' -f2)
+	changed=0
+	for r in $$rules; do
+		uci delete firewall."$$r"
+		changed=1
+	done
+	if [ "$$changed" -eq 1 ]; then
+		uci commit firewall
+		/etc/init.d/firewall restart
+	fi
 fi
 exit 0
 endef
