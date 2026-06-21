@@ -23,26 +23,20 @@ endef
 
 define Package/luci-app-access-control/prerm
 #!/bin/sh
-/etc/init.d/inetac stop
-/etc/init.d/inetac disable
+if [ -z "$${IPKG_INSTROOT}" ]; then
+	/etc/init.d/inetac stop
+	/etc/init.d/inetac disable
+fi
 exit 0
-This version cleans up configuration, bot fails on CC:
-#!/usr/bin/lua
-require "uci"
-os.execute ("exec /etc/init.d/inetac stop")
-os.execute ("exec /etc/init.d/inetac disable")
-local x = uci.cursor()
-local commit = false
-x:foreach ("firewall", "rule",
-    function(s)
-        if s.ac_enabled~=nil  then
-            x:delete ("firewall", s[".name"])
-            commit = true
-        end
-    end)
-if commit then
-    x:commit("firewall")
-end
+endef
+
+define Package/luci-app-access-control/postrm
+#!/bin/sh
+if [ -z "$${IPKG_INSTROOT}" ]; then
+	rm -f /tmp/luci-indexcache*
+	/etc/init.d/rpcd restart
+fi
+exit 0
 endef
 
 include $(TOPDIR)/feeds/luci/luci.mk
