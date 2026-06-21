@@ -38,7 +38,7 @@ echo "https://securecrt.github.io/luci-access-control/x86_64/action" >> /etc/apk
 
 ```sh
 apk update
-apk add luci-app-access-control
+apk add luci-app-access-control luci-i18n-access-control-zh-cn
 ```
 
 > The post-install script automatically enables and starts the service.
@@ -51,6 +51,7 @@ Download the `.ipk` file from [Releases](https://github.com/securecrt/luci-acces
 
 ```sh
 opkg install luci-app-access-control_*.ipk
+opkg install luci-i18n-access-control-zh-cn_*.ipk   # optional: Chinese UI
 /etc/init.d/inetac enable
 /etc/init.d/inetac start
 ```
