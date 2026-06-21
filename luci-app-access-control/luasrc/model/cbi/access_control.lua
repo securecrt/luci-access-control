@@ -237,10 +237,10 @@ local s_rule = mr:section(TypedSection, "rule", translate("Client Rules"))
         -- read from weekdays actually
         function o.cfgvalue (self, section)
             local days = self.map:get (section, "weekdays")
-            if days==nil then
-                return '1'
-            end
-            return string.find (days, day) and '1' or '0'
+            if not days then return '1' end
+            -- case‑insensitive check
+            days = days:lower()
+            return days:find(day) and '1' or '0'
         end
      
         --  prevent saveing option in config file   
@@ -254,18 +254,23 @@ local s_rule = mr:section(TypedSection, "rule", translate("Client Rules"))
     end   
     
     function wd_write(self, section)
-        local value=''
-        local cnt=0
-        for _,day in ipairs (Days) do
+        local selected = {}
+        for _,day in ipairs(Days) do
             local key = "cbid."..self.map.config.."."..section.."."..day
             if mr:formvalue(key) then
-                value = value..' '..day
-                cnt = cnt+1
+                table.insert(selected, day)
             end
         end
-        if cnt==7  then  --all days means no filtering 
-            value = ''
+        -- if all days selected, clear the option (no filtering)
+        if #selected == #Days then
+            self.map:set(section, "weekdays", "")
+            return
         end
+        -- capitalize first letter (Mon, Tue, ...)
+        for i, d in ipairs(selected) do
+            selected[i] = d:sub(1,1):upper()..d:sub(2)
+        end
+        local value = table.concat(selected, ' ')
         self.map:set(section, "weekdays", value)
     end
 
