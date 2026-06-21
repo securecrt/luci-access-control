@@ -49,7 +49,17 @@ msgstr "取消上网"
 msgid "Enabled"
 msgstr "启用"
 
-msgid "Description"
-msgstr "备注描述"
+msgid "Name"
+msgstr "名称"
+
+msgid "Enter ticket duration (minutes):"
+msgstr "请输入临时上网时长 (分钟):"
+
+msgid "Invalid duration"
+msgstr "输入时长无效"
+
+msgid "Any day"
+msgstr "任意天"
+
 
 

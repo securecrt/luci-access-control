@@ -1,0 +1,14 @@
+{
+	"luci-app-access-control": {
+		"description": "Grant access to access-control configuration",
+		"read": {
+			"ubus": {
+				"luci-rpc": [ "getHostHints" ]
+			},
+			"uci": [ "access_control", "firewall" ]
+		},
+		"write": {
+			"uci": [ "access_control", "firewall" ]
+		}
+	}
+}

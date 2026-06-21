@@ -1,57 +1,35 @@
-#!/usr/bin/lua
+#!/bin/sh
 
---[[
-LuCI - Lua Configuration Interface - Internet access control
-
-Copyright 2015,2016 Krzysztof Szuster.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-$Id$
-
-This daemon restores internet blocking rules to normal operation after their temporary suspension.
-]]--
-
-require "uci"
-
-
-function check ()
-    local x = uci.cursor()
-    local tnow = os.time()
-    local nexttime 
-    local changed = false
-     
-    x:foreach ("firewall", "rule", 
-        function(s) 
-            if s.ac_enabled=='1' and s.ac_suspend then
-                local tend = math.ceil (tonumber (s.ac_suspend) / 60) * 60 
-                local jeszcze = tend - tnow
-                if jeszcze <= 0 then
-                    x:set ("firewall", s[".name"], "enabled", '1')
-                    x:delete ("firewall", s[".name"], "ac_suspend")
-                    changed = true
-                else
-                    if not nexttime or nexttime > jeszcze then
-                        nexttime = jeszcze
-                    end
-                end
-            end
-        end)
-    if changed then
-        x:commit("firewall")
-        os.execute ("/etc/init.d/firewall restart")
-    end
-    return nexttime    
-end
-
-while true do
-    local nexttime = check()
-    if nexttime==nil then
-        break
-    end
-    os.execute ("exec sleep "..nexttime)
-end    
+while true; do
+	tnow=$(date +%s)
+	
+	# Get all ac_suspend values. Format of each line: cfgxxxxxx=timestamp
+	suspends=$(uci show firewall | grep "\.ac_suspend=" | sed -E "s/firewall\.([^.]+)\.ac_suspend='?([0-9]+)'?/\1=\2/")
+	
+	has_active_tickets=0
+	
+	if [ -n "$suspends" ]; then
+		for item in $suspends; do
+			section=$(echo "$item" | cut -d'=' -f1)
+			suspend_val=$(echo "$item" | cut -d'=' -f2)
+			
+			if [ "$tnow" -ge "$suspend_val" ]; then
+				uci set firewall."$section".enabled='1'
+				uci del firewall."$section".ac_suspend
+			else
+				has_active_tickets=1
+			fi
+		done
+		
+		if [ -n "$(uci changes firewall)" ]; then
+			uci commit firewall
+			/etc/init.d/firewall restart
+		fi
+	fi
+	
+	if [ "$has_active_tickets" -eq 1 ]; then
+		sleep 5
+	else
+		sleep 30
+	fi
+done

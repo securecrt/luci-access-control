@@ -51,3 +51,16 @@ msgstr ""
 
 msgid "Time value must be HH:MM or empty"
 msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Enter ticket duration (minutes):"
+msgstr ""
+
+msgid "Invalid duration"
+msgstr ""
+
+msgid "Any day"
+msgstr ""
+

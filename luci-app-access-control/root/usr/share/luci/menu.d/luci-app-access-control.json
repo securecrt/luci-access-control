@@ -1,0 +1,14 @@
+{
+	"admin/network/access_control": {
+		"title": "Access Control",
+		"order": 70,
+		"action": {
+			"type": "view",
+			"path": "access_control"
+		},
+		"depends": {
+			"acl": [ "luci-app-access-control" ],
+			"uci": { "access_control": true, "firewall": true }
+		}
+	}
+}
