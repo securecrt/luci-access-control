@@ -32,10 +32,7 @@ return view.extend({
 
 		// 1. Global Settings Map
 		m1 = new form.Map('access_control', _('Internet Access Control'),
-			_('Access Control allows you to manage Internet access for specific local hosts.<br/>' +
-			  'Each rule defines when a device should be blocked from having Internet access. The rules may be active permanently or during certain times of the day.<br/>' +
-			  'The rules may also be restricted to specific days of the week.<br/>' +
-			  'Any device that is blocked may obtain a ticket suspending the restriction for a specified time.'));
+			_('Access Control allows you to manage Internet access for specific local hosts.<br/>Each rule defines when a device should be blocked from having Internet access. The rules may be active permanently or during certain times of the day.<br/>The rules may also be restricted to specific days of the week.<br/>Any device that is blocked may obtain a ticket suspending the restriction for a specified time.'));
 
 		s1 = m1.section(form.NamedSection, 'general', 'access_control', _('General settings'));
 		s1.anonymous = true;
