@@ -17,6 +17,21 @@ if [ -z "$${IPKG_INSTROOT}" ]; then
 	/etc/init.d/inetac start
 	rm -f /tmp/luci-indexcache*
 	/etc/init.d/rpcd restart
+
+	# Restore enabled='1' for access-control rules that should be active after upgrade
+	rules=$$(uci show firewall | grep "\.ac_enabled='1'" | cut -d'.' -f2)
+	changed=0
+	for r in $$rules; do
+		susp=$$(uci get firewall."$$r".ac_suspend 2>/dev/null)
+		if [ -z "$$susp" ]; then
+			uci set firewall."$$r".enabled='1'
+			changed=1
+		fi
+	done
+	if [ "$$changed" -eq 1 ]; then
+		uci commit firewall
+		/etc/init.d/firewall restart
+	fi
 fi
 exit 0
 endef
