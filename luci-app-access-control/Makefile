@@ -12,8 +12,12 @@ PKG_RELEASE:=1
 
 define Package/luci-app-access-control/postinst
 #!/bin/sh
-/etc/init.d/inetac enable
-/etc/init.d/inetac start
+if [ -z "$${IPKG_INSTROOT}" ]; then
+	/etc/init.d/inetac enable
+	/etc/init.d/inetac start
+	rm -f /tmp/luci-indexcache*
+	/etc/init.d/rpcd restart
+fi
 exit 0
 endef
 
