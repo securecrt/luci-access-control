@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
 
 LUCI_TITLE:=LuCI Internet Access Control
 LUCI_NAME:=luci-app-access-control
-PKG_VERSION:=0.4.3
+PKG_VERSION:=0.4.5
 PKG_RELEASE:=1
 
 define Package/luci-app-access-control/postinst
