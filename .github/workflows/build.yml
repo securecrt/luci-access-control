@@ -16,7 +16,7 @@ on:
       openwrt_version:
         description: 'OpenWrt target version'
         required: true
-        default: 'openwrt-25.12'
+        default: '25.12.4'
         type: string
       create_release:
         description: 'Create a Draft Release on GitHub?'
@@ -30,7 +30,7 @@ on:
         type: string
 
 env:
-  DEFAULT_OPENWRT_VERSION: 'openwrt-25.12'
+  DEFAULT_OPENWRT_VERSION: '25.12.4'
 
 jobs:
   build:
@@ -50,7 +50,6 @@ jobs:
           PACKAGES: luci-app-access-control
           INDEX: 1
           BUILD_LOG: 1
-          PRIVATE_KEY: ${{ secrets.APK_SIGNING_KEY }}
 
       - name: Store package artifacts
         uses: actions/upload-artifact@v6
