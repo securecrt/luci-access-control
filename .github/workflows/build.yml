@@ -73,22 +73,21 @@ jobs:
             bin/packages/**/*access-control*.ipk
             bin/packages/**/*access-control*.apk
 
-      - name: Install abuild
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y abuild
-
       - name: Sign APK Repository Index
         env:
           APK_SIGNING_KEY: ${{ secrets.APK_SIGNING_KEY }}
         run: |
           if [ -n "$APK_SIGNING_KEY" ]; then
-            echo "$APK_SIGNING_KEY" > securecrt
-            chmod 600 securecrt
-            find bin/packages/ -type f -name "APKINDEX.tar.gz" | while read index_file; do
-              abuild-sign -k securecrt "$index_file"
-            done
-            rm -f securecrt
+            # Run abuild-sign inside an Alpine Docker container to ensure tool compatibility
+            docker run --rm -v "$PWD":/workspace -w /workspace -e APK_SIGNING_KEY="$APK_SIGNING_KEY" alpine:latest sh -c '
+              apk add --no-cache abuild &&
+              echo "$APK_SIGNING_KEY" > securecrt &&
+              chmod 600 securecrt &&
+              find bin/packages/ -type f -name "APKINDEX.tar.gz" | while read index_file; do
+                abuild-sign -k securecrt "$index_file"
+              done
+              rm -f securecrt
+            '
           else
             echo "Warning: APK_SIGNING_KEY is not set. Repository index will remain unsigned."
           fi
