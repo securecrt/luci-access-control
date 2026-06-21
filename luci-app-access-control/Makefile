@@ -68,5 +68,5 @@ exit 0
 endef
 
 include $(TOPDIR)/feeds/luci/luci.mk
-#
 # call BuildPackage - OpenWrt buildroot signature
+$(eval $(call BuildPackage,luci-app-access-control))

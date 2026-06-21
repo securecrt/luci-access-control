@@ -16,7 +16,7 @@ on:
       openwrt_version:
         description: 'OpenWrt target version'
         required: true
-        default: '25.12.4'
+        default: 'openwrt-25.12'
         type: string
       create_release:
         description: 'Create a Draft Release on GitHub?'
@@ -26,11 +26,11 @@ on:
       release_tag:
         description: 'Release tag name (if creating release)'
         required: false
-        default: 'v0.4.4'
+        default: 'v0.4.5'
         type: string
 
 env:
-  DEFAULT_OPENWRT_VERSION: '25.12.4'
+  DEFAULT_OPENWRT_VERSION: 'openwrt-25.12'
 
 jobs:
   build:
