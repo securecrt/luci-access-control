@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "architecture": "x86_64",
+  "packages": {
+    "luci-app-access-control": "0.4.5-r1",
+    "luci-i18n-access-control-zh-cn": "26.172.29123~01975d9"
+  }
+}
