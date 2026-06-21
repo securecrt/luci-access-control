@@ -10,7 +10,7 @@ A fork of [k-szuster/luci-access-control](https://github.com/k-szuster/luci-acce
 - Block permanently or on a time schedule (daily time range + day of week)
 - **Temporary access ("Ticket")**: any blocked device can be granted temporary internet access with one click
 - **Mobile-optimized UI**: the interface layout, buttons and interactions are redesigned to work comfortably on smartphone browsers
-- Supports both modern **APK** (OpenWrt 25.12+) and legacy **IPK** (opkg) package formats
+- Supports modern **APK** package format (OpenWrt 25.12+)
 
 ---
 
@@ -31,7 +31,7 @@ wget -P /etc/apk/keys https://securecrt.github.io/luci-access-control/keys/secur
 ### 2. Add the repository
 
 ```sh
-echo "https://securecrt.github.io/luci-access-control/x86_64/action" >> /etc/apk/repositories
+echo "https://securecrt.github.io/luci-access-control/x86_64/action/packages.adb" >> /etc/apk/repositories.d/customfeeds.list
 ```
 
 ### 3. Install
@@ -42,19 +42,6 @@ apk add luci-app-access-control luci-i18n-access-control-zh-cn
 ```
 
 > The post-install script automatically enables and starts the service.
-
----
-
-## Install via IPK (legacy OpenWrt)
-
-Download the `.ipk` file from [Releases](https://github.com/securecrt/luci-access-control/releases) and install:
-
-```sh
-opkg install luci-app-access-control_*.ipk
-opkg install luci-i18n-access-control-zh-cn_*.ipk   # optional: Chinese UI
-/etc/init.d/inetac enable
-/etc/init.d/inetac start
-```
 
 ---
 
