@@ -36,6 +36,8 @@ jobs:
   build:
     name: Build Packages
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout code
@@ -70,6 +72,40 @@ jobs:
           path: |
             bin/packages/**/*access-control*.ipk
             bin/packages/**/*access-control*.apk
+
+      - name: Install abuild
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y abuild
+
+      - name: Sign APK Repository Index
+        env:
+          APK_SIGNING_KEY: ${{ secrets.APK_SIGNING_KEY }}
+        run: |
+          if [ -n "$APK_SIGNING_KEY" ]; then
+            echo "$APK_SIGNING_KEY" > securecrt
+            chmod 600 securecrt
+            find bin/packages/ -type f -name "APKINDEX.tar.gz" | while read index_file; do
+              abuild-sign -k securecrt "$index_file"
+            done
+            rm -f securecrt
+          else
+            echo "Warning: APK_SIGNING_KEY is not set. Repository index will remain unsigned."
+          fi
+
+      - name: Copy keys for deployment
+        run: |
+          if [ -d keys ]; then
+            cp -r keys ./bin/packages/
+          fi
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./bin/packages
+          publish_branch: gh-pages
+          force_orphan: true
 
   release:
     name: Create GitHub Release
